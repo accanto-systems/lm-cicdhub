@@ -10,7 +10,7 @@ A server with 32G Memory, 4+ CPUs, 2T storage is recommended to host the CICDHub
 
 #### Ansible
 
-To install the CICDHub you will need [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) (tested on v2.7.2) on your machine. You may also need sshpass installed if password access is being used to the server.
+To install the CICDHub you will need [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) (tested on v2.8.1) on your machine. You may also need sshpass installed if password access is being used to the server.
 
 ```
 apt-get install sshpass
