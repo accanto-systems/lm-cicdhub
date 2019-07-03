@@ -10,7 +10,11 @@ A server with 32G Memory, 4+ CPUs, 2T storage is recommended to host the CICDHub
 
 #### Ansible
 
-To install the CICDHub you will need [Ansible](https://www.ansible.com/) (tested on v2.7.2) on your machine. You may also sshpass installed if password access is being used to the server.
+To install the CICDHub you will need [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) (tested on v2.7.2) on your machine. You may also need sshpass installed if password access is being used to the server.
+
+```
+apt-get install sshpass
+```
 
 #### Ansible-Roles
 
@@ -92,7 +96,7 @@ ansible_ssh_pass: vagrant
 ansible_become_pass: vagrant
 ```
 
-_Note: The CICDHub playbooks will require a password to become `sudo` user_
+_Note: The CICDHub playbooks will require access to the `sudo` user_
 
 The inventory may be configured in any way supported by Ansible, you may choose to use SSH passwords or SSH keys and you may choose to store values in plain-text or with ansible-vault. See [Build Your Inventory](https://docs.ansible.com/ansible/latest/network/getting_started/first_inventory.html) and [List of behavioual inventory parameters](https://docs.ansible.com/ansible/latest/intro_inventory.html#list-of-behavioral-inventory-parameters) from the Ansible documentation.
 

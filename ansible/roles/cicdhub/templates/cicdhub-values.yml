@@ -1,0 +1,31 @@
+gogs:
+  service:
+    gogs:
+      serverRootUrl: http://{{ kubeadm_advertise_address if kubeadm_advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:8001/
+
+{% if bootstrap_jenkins_lmctl_slave|default(False)|bool == True %}
+jenkins:
+  agent:
+    podName: lmctl-slave
+    image: lmctlslave
+    imageTag: 0.1
+    customJenkinsLabels: 'lmctl'
+    volumes:
+    - type: ConfigMap
+      configMapName: lmctl-slave-config
+      mountPath: "/lmctl-data"
+    envVars:
+    - name: LMCONFIG
+      value: "/lmctl-data/lmctl-config.yaml"
+{% endif %}
+
+volumesInit:
+{% if cicdhub_init_volumes|default(False)|bool == True %}
+  enabled: true
+{% else %}
+  enabled: false  
+{% endif %}
+
+global: 
+  ldap:
+    managerPassword: "{{ cicdhub_ldap_manager_password|default('') }}"

@@ -1,0 +1,6 @@
+- name: Update hosts
+  lineinfile: 
+    dest: /etc/hosts 
+    line: "{{ kubeadm_advertise_address if kubeadm_advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }} docker-registry.cicdhub nexus.cicdhub jenkins-master.cicdhub git.cicdhub openldap.cicdhub" 
+    state: present
+  become: yes

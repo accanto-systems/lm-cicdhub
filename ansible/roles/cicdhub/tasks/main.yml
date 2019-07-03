@@ -1,0 +1,66 @@
+- name: Register cicdhub installation directory
+  set_fact:
+    cicdhub_installer_dir: "/home/{{ ansible_user_id }}/cicdhub-installer"
+
+- name: Clearout cicdhub installation directory
+  file:
+    path: "{{ cicdhub_installer_dir }}"
+    state: absent
+
+- name: Create directory for installation
+  file:
+    path: "{{ cicdhub_installer_dir }}"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+
+- import_tasks: validate_cicdhub_chart_strategy.yml
+
+- import_tasks: prepare_charts_from_helm_repo.yml
+  when: cicdhub_chart_strategy == 'from_helm_repo'
+- import_tasks: prepare_charts_from_chart_src.yml
+  when: cicdhub_chart_strategy == 'from_chart_src'
+- import_tasks: prepare_charts_from_chart.yml
+  when: cicdhub_chart_strategy == 'from_chart'
+
+- import_tasks: prepare_volumes_directories.yml
+- import_tasks: install_cicdhub.yml
+
+- import_tasks: update_hosts.yml
+
+- name: Gather CICDHub IP Address
+  set_fact:
+    cicdhub_addr_ip: "{{ kubeadm_advertise_address if kubeadm_advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+
+- name: Establish CICDHub Address Parts
+  set_fact:
+    cicdhub_addr_docker_registry_host: "{{cicdhub_addr_ip}}"
+    cicdhub_addr_docker_registry_port: 32736
+    cicdhub_addr_nexus_host: "{{cicdhub_addr_ip}}"
+    cicdhub_addr_nexus_port: 32739
+    cicdhub_addr_git_host: "git.cicdhub"
+    cicdhub_addr_git_port: 32080
+
+- name: Establish CICDHub Full Addresses
+  set_fact:
+    cicdhub_addr_nexus: "http://{{cicdhub_addr_nexus_host}}:{{cicdhub_addr_nexus_port}}"
+    cicdhub_addr_docker_registry: "http://{{cicdhub_addr_docker_registry_host}}:{{cicdhub_addr_docker_registry_port}}"
+    cicdhub_addr_git: "http://{{cicdhub_addr_git_host}}:{{cicdhub_addr_git_port}}"
+
+- import_tasks: create_nexus_repositories.yml
+  when: bootstrap_nexus_repositories|default(False) == True
+
+- import_tasks: bootstrap_lm.yml
+  when: bootstrap_lm_packages|default(False) == True
+
+- import_tasks: bootstrap_git_projects.yml
+  when: bootstrap_git_projects|default(False) == True
+
+- import_tasks: bootstrap_aio.yml
+  when: bootstrap_aio|default(False) == True
+
+- import_tasks: bootstrap_pypi_artifacts.yml
+  when: bootstrap_pypi_artifacts|default(False) == True
+
+- import_tasks: bootstrap_lmctl_slave_image.yml
+  when: bootstrap_jenkins_lmctl_slave|default(False) == True

@@ -1,0 +1,55 @@
+
+- name: Remove existing proxy site (if exists)
+  command: a2dissite cicdhub-proxy.conf
+  ignore_errors: True
+
+- name: Remove existing proxy config (if exists)
+  file:
+    state: absent
+    path: /etc/apache2/sites-available/cicdhub-proxy.conf
+
+## LM SSL
+- when: cicdhub_proxy_ssl|default(False)|bool == True
+  block:
+    - name: Ensure apache SSL directory exists
+      file: 
+        path: /etc/apache2/ssl
+        state: directory 
+    - name: Generate RSA key for apache
+      openssl_privatekey:
+        path: /etc/apache2/ssl/cicdhub-ca.key
+        state: present
+        type: RSA
+        size: 2048
+    - name: Generate Certificate signing request for apache
+      openssl_csr:
+        path: /etc/apache2/ssl/cicdhub-ca.csr
+        state: present
+        privatekey_path: /etc/apache2/ssl/cicdhub-ca.key
+        country_name: "{{ cicdhub_crs_country_name }}"
+        state_or_province_name: "{{ cicdhub_crs_state_or_province_name }}"
+        locality_name: "{{ cicdhub_crs_locality_name }}"
+        organization_name: "{{ cicdhub_crs_organization_name }}"
+        organizational_unit_name: "{{ cicdhub_crs_organizational_unit_name }}"
+        common_name: "{{ cicdhub_crs_common_name }}"
+    - name: Generate Certificate for apache
+      openssl_certificate:
+        path: /etc/apache2/ssl/cicdhub-ca.crt
+        state: present
+        privatekey_path: /etc/apache2/ssl/cicdhub-ca.key
+        csr_path: /etc/apache2/ssl/cicdhub-ca.csr
+        provider: selfsigned
+
+
+- name: Copy proxy config
+  template:
+    src: cicdhub-proxy.conf
+    dest: /etc/apache2/sites-available
+    
+- name: Add proxy site
+  command: a2ensite cicdhub-proxy.conf
+
+- name: Restart Apache
+  service:
+    name: apache2
+    state: restarted

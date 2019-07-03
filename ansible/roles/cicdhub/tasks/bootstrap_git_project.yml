@@ -1,0 +1,104 @@
+- name: Create Git repository
+  uri:
+    url: "{{cicdhub_addr_git}}/api/v1/user/repos"
+    method: POST
+    body_format: json
+    headers:
+      Authorization: "token {{ git_token }}"
+    body: {
+      "Name": "{{ git_project_def.name }}",
+      "Description": "{{ git_project_def.description|default('') }}",
+      "private": false
+    }
+    return_content: True
+    status_code: 201, 422
+
+- name: Create Bootstrap Git Projects Directory
+  file:
+    path: "/tmp/bootstrap_git"
+    state: directory
+
+- name: Clear target Git project directory (if exists already)
+  file: 
+    path: "/tmp/bootstrap_git/{{git_project_def.name}}"
+    state: absent
+
+- name: Create target Git project directory
+  file: 
+    path: "/tmp/bootstrap_git/{{git_project_def.name}}"
+    state: directory
+
+- name: Copy Git Project content
+  copy:
+    src: "{{ git_project_def.content | replace('__PLAY', playbook_dir) }}/"
+    dest: "/tmp/bootstrap_git/{{git_project_def.name}}/"
+    directory_mode: yes
+  when: git_project_def.template|default(False)|bool != True
+
+- name: Template Git Project content (ensure directory structure is created)
+  file:
+    path: "/tmp/bootstrap_git/{{git_project_def.name}}/{{tmpl_item.path}}"
+    state: directory
+  with_filetree: "{{ git_project_def.content | replace('__PLAY', playbook_dir) }}"
+  loop_control:
+    loop_var: tmpl_item
+  when: git_project_def.template|default(False)|bool == True and tmpl_item.state == 'directory'
+
+- name: Copy Git Project content not suitable for template
+  copy:
+    src: "{{ tmpl_item.src }}/"
+    dest: "/tmp/bootstrap_git/{{git_project_def.name}}/{{tmpl_item.path}}"
+    directory_mode: yes
+  with_filetree: "{{ git_project_def.content | replace('__PLAY', playbook_dir) }}"
+  loop_control:
+    loop_var: tmpl_item
+  when: git_project_def.template|default(False)|bool == True and tmpl_item.state == 'file' and (tmpl_item.path|splitext)[1] not in git_project_def.template_fileexts|default([])
+
+- name: Template Git Project content
+  template:
+    src: "{{ tmpl_item.src }}/"
+    dest: "/tmp/bootstrap_git/{{git_project_def.name}}/{{tmpl_item.path}}"
+    directory_mode: yes
+    block_start_string: "{{ '<{%' if git_project_def.alt_template_syntax|default(False)|bool == True else '{%' }}"
+    block_end_string: "{{ '%}>' if git_project_def.alt_template_syntax|default(False)|bool == True else '%}' }}"
+    variable_start_string: "{{ '<{{' if git_project_def.alt_template_syntax|default(False)|bool == True else '{{' }}"
+    variable_end_string: "{{ '}}>' if git_project_def.alt_template_syntax|default(False)|bool == True else '}}' }}"
+  with_filetree: "{{ git_project_def.content | replace('__PLAY', playbook_dir) }}"
+  loop_control:
+    loop_var: tmpl_item
+  when: git_project_def.template|default(False)|bool == True and tmpl_item.state == 'file' and (tmpl_item.path|splitext)[1] in git_project_def.template_fileexts|default([])
+
+- name: Init Git project in content directory
+  shell: "git init"
+  args:
+    chdir: "/tmp/bootstrap_git/{{git_project_def.name}}"
+
+- name: Set Git User
+  shell: "git config --global user.name '{{ bootstrap_git_username }}'"
+  args:
+    chdir: "/tmp/bootstrap_git/{{git_project_def.name}}"
+
+- name: Set Git email
+  shell: "git config --global user.email '{{ bootstrap_git_email }}'"
+  args:
+    chdir: "/tmp/bootstrap_git/{{git_project_def.name}}"
+
+- name: Git Add
+  shell: "git add ."
+  args:
+    chdir: "/tmp/bootstrap_git/{{git_project_def.name}}"
+
+- name: Git Initial Commit
+  shell: "git commit -m 'Bootstrap content'"
+  args:
+    chdir: "/tmp/bootstrap_git/{{git_project_def.name}}"
+
+- name: Add Git remote
+  shell: "git remote add origin http://{{ bootstrap_git_username }}:{{ bootstrap_git_password }}@{{cicdhub_addr_git_host}}:{{cicdhub_addr_git_port}}/{{ bootstrap_git_username }}/{{ git_project_def.name }}.git"
+  args:
+    chdir: "/tmp/bootstrap_git/{{git_project_def.name}}"
+
+- name: Push to Git repository
+  shell: "git push -u origin master"
+  args:
+    chdir: "/tmp/bootstrap_git/{{git_project_def.name}}"

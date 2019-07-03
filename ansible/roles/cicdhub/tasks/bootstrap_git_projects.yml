@@ -1,0 +1,62 @@
+- name: Register Gogs user (automatically becomes an admin user)
+  uri:
+    url: "{{cicdhub_addr_git}}/user/sign_up"
+    method: POST
+    body: "user_name={{ bootstrap_git_username }}&password={{ bootstrap_git_password }}&email={{bootstrap_git_email}}&retype={{ bootstrap_git_password }}"
+    return_content: yes
+    headers:
+      Content-Type: "application/x-www-form-urlencoded"
+    status_code: 200, 201, 503, 302
+  register: gogs_signup
+  until: gogs_signup['status']|default(0) == 200 or gogs_signup['status']|default(0) == 201 or gogs_signup['status']|default(0) == 302
+  retries: 100
+  delay: 10
+
+- name: Get Gogs token
+  uri:
+    url: "{{cicdhub_addr_git}}/api/v1/users/{{ bootstrap_git_username }}/tokens"
+    method: POST
+    user: "{{ bootstrap_git_username }}"
+    password: "{{ bootstrap_git_password }}"
+    force_basic_auth: yes
+    body_format: json
+    body: {
+      "Name": "token1"
+    }
+    return_content: yes
+    status_code: 201, 503
+  register: gogstoken
+  until: gogstoken['status']|default(0) == 201
+  retries: 30
+  delay: 10
+
+- name: Set Git Project Template Facts
+  set_fact:
+    bgv_cicdhub_ip: "{{cicdhub_addr_ip}}"
+    bgv_gogs_addr: http://{{cicdhub_addr_ip}}:8001
+    bgv_gogs_clone_addr: http://{{bootstrap_git_username}}:{{bootstrap_git_password}}@{{cicdhub_addr_ip}}:8001
+    bgv_gogs_admin_user: "{{bootstrap_git_username}}"
+    bgv_gogs_admin_pass: "{{bootstrap_git_password}}"
+    bgv_aio_download_path: http://{{cicdhub_addr_ip}}:8002/repository/raw/allinone/{{bootstrap_aio_path|default('') | basename}}
+    bgv_pypi_pip_install_path: http://{{cicdhub_addr_ip}}:8002/repository/pypi-all/simple
+    bgv_nexus_addr: http://{{cicdhub_addr_ip}}:8002
+    bgv_nexus_admin_user: admin
+    bgv_nexus_admin_pass: admin123
+    bgv_jenkins_addr: http://{{cicdhub_addr_ip}}:8003
+    bgv_jenkins_admin_user: admin
+    bgv_jenkins_admin_pass: admin
+    bgv_lm_ui_addr: https://{{cicdhub_addr_ip}}:8080
+    bgv_lm_api_addr: https://{{cicdhub_addr_ip}}:8081
+    bgv_kibana_addr: http://{{cicdhub_addr_ip}}:8083
+    bgv_ansiblerm_addr: https://{{cicdhub_addr_ip}}:31081/api/v1.0/resource-manager/ui
+    bgv_openldap_addr: ldap://{{cicdhub_addr_ip}}:32737
+    bgv_openldap_admin_user: "cn=admin,dc=lm,dc=com"
+    bgv_openldap_admin_pass: "{{ cicdhub_ldap_manager_password|default('') }}"
+    bgv_docker_registry_addr: http://{{cicdhub_addr_ip}}:32736
+
+- name: Create Git project
+  include_tasks: bootstrap_git_project.yml
+  vars: 
+    git_project_def: "{{ item }}"
+    git_token: "{{ gogstoken.json.sha1 }}"
+  loop: "{{ bootstrap_git_project_defs }}"

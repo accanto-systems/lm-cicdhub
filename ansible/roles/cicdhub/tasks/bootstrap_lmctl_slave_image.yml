@@ -1,0 +1,38 @@
+- name: Clear out lmctl slave docker image directory
+  file:
+    path: "{{ cicdhub_installer_dir }}/lmctl-slave-image"
+    state: absent
+
+- name: Create lmctl slave docker image directory
+  file:
+    path: "{{ cicdhub_installer_dir }}/lmctl-slave-image"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+
+- name: Copy default lmctl-config.yaml
+  template:
+    src: templates/lmctl-config.yaml
+    dest: "{{ cicdhub_installer_dir }}/lmctl-slave-image/lmctl-config.yaml"
+  when: bootstrap_jenkins_lmctl_config_file|default('') == ''
+
+- name: Copy user provided lmctl-config.yaml
+  template:
+    src: "{{ bootstrap_jenkins_lmctl_config_file }}"
+    dest: "{{ cicdhub_installer_dir }}/lmctl-slave-image/lmctl-config.yaml"
+  when: bootstrap_jenkins_lmctl_config_file|default('') != ''
+
+- name: Delete existing lmctl slave config map 
+  shell: kubectl delete configmap lmctl-slave-config
+  failed_when: false
+
+- name: Create lmctl slave config map
+  shell: kubectl create configmap lmctl-slave-config --from-file {{ cicdhub_installer_dir }}/lmctl-slave-image/lmctl-config.yaml
+
+- name: Copy lmctl slave dockerfile
+  template:
+    src: templates/lmctl-slave-dockerfile
+    dest:  "{{ cicdhub_installer_dir }}/lmctl-slave-image/Dockerfile"
+
+- name: Build lmctl slave docker image
+  shell: docker build -t lmctlslave:{{ bootstrap_jenkins_lmctl_version }} {{ cicdhub_installer_dir }}/lmctl-slave-image/

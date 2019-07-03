@@ -1,0 +1,32 @@
+- name: "Validate variable: cicdhub_chart_strategy"
+  assert:
+    that:
+      - "cicdhub_chart_strategy == 'from_chart' or cicdhub_chart_strategy == 'from_helm_repo' or cicdhub_chart_strategy == 'from_chart_src'"
+    fail_msg: "cicdhub_chart_strategy must be either: 'from_chart' or 'from_helm_repo' or 'from_chart_src'"
+
+####################################################################################
+# Strategy: from_chart 
+####################################################################################
+- name: "Validate variable: cicdhub_chart_package"
+  assert:
+    that: 
+      - "cicdhub_chart_package is defined"
+    fail_msg: "cicdhub_chart_package must be defined when cicdhub_chart_strategy == 'from_chart' or 'from_chart_src'"
+  when: cicdhub_chart_strategy == "from_chart" or cicdhub_chart_strategy == "from_chart_src"
+
+####################################################################################
+# Strategy: from_helm_repo
+####################################################################################
+- name: "Validate variable: cicdhub_chart_repo_name"
+  assert:
+    that: 
+      - "cicdhub_chart_repo_name is defined"
+    fail_msg: "cicdhub_chart_repo_name must be defined when cicdhub_chart_strategy == 'from_helm_repo'"
+  when: cicdhub_chart_strategy == "from_helm_repo"
+
+- name: "Validate variable: cicdhub_chart_version"
+  assert:
+    that: 
+      - "cicdhub_chart_version is defined"
+    fail_msg: "cicdhub_chart_version must be defined when cicdhub_chart_strategy == 'from_helm_repo'"
+  when: cicdhub_chart_strategy == "from_helm_repo"

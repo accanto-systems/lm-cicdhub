@@ -1,0 +1,17 @@
+#####################################################################
+# Install Apache Reverse Proxy
+#####################################################################
+
+- name: Install Apache2
+  apt: 
+    name: apache2
+    state: present
+
+- name: Enable Apache modules for reverse proxy
+  apache2_module:
+    state: present
+    name: "{{ item }}"
+  with_items:
+    - proxy
+    - proxy_http
+    - ssl

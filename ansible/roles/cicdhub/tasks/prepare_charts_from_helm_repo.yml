@@ -1,0 +1,10 @@
+####################################################################################
+# cicdhub_chart_strategy == from_helm_repo
+####################################################################################
+
+- name: Update Helm repos
+  command: helm repo update
+
+- name: Set helm repo paths
+  set_fact:
+    helm_inst_cicdhub_chart: "{{cicdhub_chart_repo_name}}/cicdhub --version {{cicdhub_chart_version}}"

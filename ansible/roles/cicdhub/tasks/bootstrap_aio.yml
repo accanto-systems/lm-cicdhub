@@ -1,0 +1,20 @@
+- name: Create Bootstrap AIO Directory
+  file:
+    path: "/tmp/bootstrap_aio"
+    state: directory
+
+- name: Set facts for AIO connection to CICDHub
+  set_fact:
+    cicdhub_docker_registry_host: "{{cicdhub_addr_docker_registry_host}}"
+    cicdhub_docker_registry_port: "{{cicdhub_addr_docker_registry_port}}"
+    cicdhub_lm_helm_charts_nexus: "{{cicdhub_addr_nexus}}/repository/raw/lm-helm-charts/"
+    cicdhub_openldap: "ldap://{{cicdhub_addr_ip}}:32737"
+
+- name: Template AIO configuration
+  template:
+    src: "{{bootstrap_aio_path}}"
+    remote_src: no
+    dest: "/tmp/bootstrap_aio/{{bootstrap_aio_path | basename }}"
+
+- name: Push AIO configuration file to Nexus Raw Repository
+  shell: curl -v -u admin:admin123 --upload-file /tmp/bootstrap_aio/{{bootstrap_aio_path | basename }} {{ cicdhub_addr_nexus }}/repository/raw/allinone/

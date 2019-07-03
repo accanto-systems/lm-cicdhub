@@ -1,0 +1,45 @@
+####################################################################################
+# cicdhub_chart_strategy == from_chart_src
+####################################################################################
+
+####################################################################################
+# HTTP/HTTPs
+####################################################################################
+- name: Pull cicdhub Helm chart packaging
+  get_url:
+    url: "{{ cicdhub_chart_package }}" 
+    dest: "{{ cicdhub_installer_dir }}/helm/"
+  when: (cicdhub_chart_package | urlsplit('scheme') == 'http') or (cicdhub_chart_package | urlsplit('scheme') == 'https')
+
+####################################################################################
+# FILE
+####################################################################################
+- name: Copy cicdhub chart from local file
+  copy: 
+    remote_src: no
+    src: "{{ cicdhub_chart_package }}"
+    dest: "{{ cicdhub_installer_dir }}/helm/"
+  when: (cicdhub_chart_package | urlsplit('scheme') != 'http') and (cicdhub_chart_package | urlsplit('scheme') != 'https')
+
+####################################################################################
+# For both HTTP and File
+####################################################################################
+- name: Ensure incubator helm repo exists
+  shell: helm repo list | grep incubator
+  failed_when: false
+  register: incubator_repo
+
+- name: Add incubator repo
+  command: helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+  when: incubator_repo.rc != 0
+
+- name: Update Helm repos
+  command: helm repo update
+  when: incubator_repo.rc != 0
+
+- name: Pull chart requirements
+  command: "helm dependency update {{ cicdhub_installer_dir }}/helm/{{ cicdhub_chart_package|basename }}"
+
+- name: Set package paths
+  set_fact:
+    helm_inst_cicdhub_chart: "{{ cicdhub_installer_dir }}/helm/{{ cicdhub_chart_package|basename }}"

@@ -72,9 +72,10 @@ cicdhub_ldap_manager_password: admin
 ##################################
 
 ## Creates popular repository types in Nexus and the repository needed to bootstrap_aio and bootstrap_lm_packages
-bootstrap_nexus_repositories: false
+bootstrap_nexus_repositories: True
 
 ## Creates Git projects with the example NS and VNF services
+## __PLAY substituted for the playbook directory
 bootstrap_git_projects: True
 bootstrap_git_project_defs:
   - name: hello-world-service

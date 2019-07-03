@@ -1,8 +1,7 @@
 ---
-ansible_host: localhost
-ansible_connection: local
-#ansible_connection: ssh
-#ansible_ssh_user: user
-#ansible_ssh_pass: pass
-#ansible_become_pass: pass
+ansible_host: 192.168.56.100
+ansible_connection: ssh
+ansible_ssh_user: user
+ansible_ssh_pass: pass
+ansible_become_pass: pass
 
