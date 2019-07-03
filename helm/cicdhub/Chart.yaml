@@ -1,0 +1,15 @@
+name: cicdhub
+version: 2.0.4-SNAPSHOT
+apiVersion: v1
+description: Deployment of LM CICDHub
+maintainers:
+- name: Accanto Systems
+  email: containers@accantosystems.com
+icon: http://www.accantosystems.com/wp-content/uploads/2017/06/Accanto-w_white-systems200px.png
+keywords:
+- LM
+- Lifecycle
+- Accanto
+- CICDHub
+- CICD Hub
+engine: gotpl

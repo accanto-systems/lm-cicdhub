@@ -1,0 +1,13 @@
+{{- if .Values.openldap.enabled}}
+{{- if .Values.openldapInit.enabled}}
+apiVersion: v1
+data:
+  LDAP_ADMIN_PASSWORD: {{.Values.global.ldap.managerPassword | b64enc}}
+  LDAP_DOMAIN: {{.Values.global.ldap.domain | b64enc}}
+  LDAP_PORT: {{ int .Values.openldap.ldapPort | printf "%d" | b64enc}}
+kind: Secret
+metadata:
+  name: openldap-config
+type: Opaque
+{{- end }}
+{{- end }}

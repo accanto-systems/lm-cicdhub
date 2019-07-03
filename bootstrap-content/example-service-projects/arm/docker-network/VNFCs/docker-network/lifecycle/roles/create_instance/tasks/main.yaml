@@ -1,0 +1,43 @@
+- name: work out bridge name
+  set_fact:
+    bridgeName: "{{ networkname }}"
+
+- name: create vxlan if overlay is true
+  command: "ip link add vxlan{{ vni }} type vxlan id {{ vni }} group 239.1.1.1 dstport 0 dev eth1"
+  when: overlay == 'True'
+
+- name: Create a network with options
+  docker_network:
+    name: "{{ networkname }}"
+    driver_options:
+      com.docker.network.bridge.name: "{{ bridgeName }}"
+    ipam_options:
+      subnet: "{{ subnet }}"
+      gateway: "{{ gateway }}"
+      iprange: "{{ iprange  }}"
+  register: net_result
+
+- set_fact:
+    id: "{{ ansible_facts.docker_network.Id}}"
+
+
+- name: attach docker network to vxlan overlay
+  command: "ip link set vxlan{{ vni }} master {{ bridgeName }}"
+  when: overlay == 'True'
+
+- name: bring vxlan up 
+  command: "ip link set vxlan{{ vni }} up"
+  when: overlay == 'True'
+
+- name: report INTERNAL_RESOURCE
+  debug:
+    msg:
+     - "name: {{ bridgeName }}"
+     - "id: {{ id}}"
+     - "type: docker-network"
+
+- name: report PROPERTIES
+  debug:
+    msg:
+      - "networkid: {{ id }}"
+      - "bridgeid: {{ bridgeName }}"

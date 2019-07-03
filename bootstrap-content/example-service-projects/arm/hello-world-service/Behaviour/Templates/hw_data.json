@@ -1,0 +1,14 @@
+{
+    "name": "hw_data",
+    "projectId": "assembly::hello-world::1.0",
+    "description": "hw data network",
+    "descriptorName": "assembly::docker-network::1.0",
+    "properties": {
+        "subnet": "10.21.2.0/24",
+        "iprange": "10.21.2.0/24",
+        "networkname": "hw_data",
+        "gateway": "10.21.2.1"
+    },
+    "createdAt": "2019-02-28T09:30:17.679Z",
+    "lastModifiedAt": "2019-02-28T09:30:17.679Z"
+}

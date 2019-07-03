@@ -1,0 +1,38 @@
+name: resource::docker-network::1.0
+description: resource package for user defined docker network
+properties:
+  networkname:
+    type: string
+    description: name of the network
+    required: true
+  subnet:
+    type: string
+    description: subnet for new network
+    default: "10.20.1.0/24"
+  iprange:
+     type: string
+     description: ip range 
+     default: "10.20.1.0/24"
+  gateway:
+    type: string
+    description: subnet of user defined network
+    default: "10.20.1.1"
+  overlay:
+    type: string
+    description: Set to true if this is an overlay network
+    default: false
+  vni:
+    type: string
+    description: vxlan network identifier for this overlay network
+    default: "10"
+  networkid:
+    type: string
+    description: docker id of network instance
+    read-only: true
+  bridgeid:
+    type: string
+    description: id of linux bridge 
+    read-only: true
+lifecycle:
+- Install
+- Uninstall

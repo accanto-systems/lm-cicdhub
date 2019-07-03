@@ -1,0 +1,139 @@
+{{- if .Values.volumesInit.enabled }}
+
+{{- if .Values.nexus.enabled }}
+{{- if .Values.nexus.persistence.enabled }}
+{{- range $i := int .Values.nexus.replicaCount | until }}
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ include "volumesInit.fullPrefix" $ }}-nexus{{ $i }}
+  labels:
+    type: local
+    createdBy: marketplace-volumes-init
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  storageClassName: {{if $.Values.nexus.persistence.storageClass }}{{ $.Values.nexus.persistence.storageClass }}{{ else }}manual{{ end }}
+  capacity:
+    storage: {{ $.Values.nexus.persistence.storageSize }}
+  accessModes:
+    - {{ $.Values.nexus.persistence.accessMode }}
+  hostPath:
+    path: {{ $.Values.volumesInit.hostPath }}/volume-nexus{{ $i }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- if .Values.gogs.enabled }}
+{{- if .Values.gogs.persistence.enabled }}
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ include "volumesInit.fullPrefix" $ }}-gogs
+  labels:
+    createdBy: marketplace-volumes-init
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  storageClassName: {{if $.Values.gogs.persistence.storageClass }}{{ $.Values.gogs.persistence.storageClass }}{{ else }}manual{{ end }}
+  capacity:
+    storage: {{ $.Values.gogs.persistence.size }}
+  accessModes:
+  - {{ $.Values.gogs.persistence.accessMode }}
+  hostPath:
+    path: {{ $.Values.volumesInit.hostPath }}/volume-gogs0
+{{- end }}
+
+{{- if .Values.gogs.postgresql.persistence.enabled }}
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ include "volumesInit.fullPrefix" $ }}-gogs-postgresql
+  labels:
+    createdBy: marketplace-volumes-init
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  storageClassName: {{if $.Values.gogs.postgresql.persistence.storageClass }}{{ $.Values.gogs.postgresql.persistence.storageClass }}{{ else }}manual{{ end }}
+  capacity:
+    storage: {{ $.Values.gogs.postgresql.persistence.size }}
+  accessModes:
+  {{- range $.Values.gogs.postgresql.persistence.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+  hostPath:
+    path: {{ $.Values.volumesInit.hostPath }}/volume-gogs-postgresql0
+{{- end }}
+{{- end }}
+
+{{- if and .Values.jenkins.enabled .Values.jenkins.persistence.enabled }}
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ include "volumesInit.fullPrefix" $ }}-jenkins0
+  labels:
+    type: local
+    createdBy: marketplace-volumes-init
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  storageClassName: {{if $.Values.jenkins.persistence.storageClass }}{{ $.Values.jenkins.persistence.storageClass }}{{ else }}manual{{ end }}
+  capacity:
+    storage: {{ $.Values.jenkins.persistence.size }}
+  accessModes:
+    - {{ $.Values.jenkins.persistence.accessMode }}
+  hostPath:
+    path: {{ $.Values.volumesInit.hostPath }}/volume-jenkins0
+{{- end }}
+
+{{- if and .Values.dockerregistry.enabled .Values.dockerregistry.persistence.enabled }}
+{{- range $i := int .Values.dockerregistry.replicaCount | until }}
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ include "volumesInit.fullPrefix" $ }}-dockerregistry{{ $i }}
+  labels:
+    type: local
+    createdBy: marketplace-volumes-init
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  storageClassName: {{if $.Values.dockerregistry.persistence.storageClass }}{{ $.Values.dockerregistry.persistence.storageClass }}{{ else }}manual{{ end }}
+  capacity:
+    storage: {{ $.Values.dockerregistry.persistence.size }}
+  accessModes:
+    - {{ $.Values.dockerregistry.persistence.accessMode }}
+  hostPath:
+    path: {{ $.Values.volumesInit.hostPath }}/volume-dockerregistry{{ $i }}
+{{- end }}
+{{- end }}
+
+{{- if and .Values.openldap.enabled .Values.openldap.persistence.enabled }}
+{{- range $i := int .Values.openldap.replicaCount | until }}
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ include "volumesInit.fullPrefix" $ }}-f{{ $i }}
+  labels:
+    type: local
+    createdBy: volumes-init
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  storageClassName: {{if $.Values.openldap.persistence.storageClass }}{{ $.Values.openldap.persistence.storageClass }}{{ else }}manual{{ end }}
+  capacity:
+    storage: {{ $.Values.openldap.persistence.size }}
+  accessModes:
+    - {{ $.Values.openldap.persistence.accessMode }}
+  hostPath:
+    path: {{ $.Values.volumesInit.hostPath }}/volume-f{{ $i }}
+{{- end }}
+{{- end }}
+
+{{- end }}

@@ -1,0 +1,17 @@
+{{- if .Values.nexus.enabled}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "cicdhub.nexus.name" . }}-svc-nodeport
+spec:
+  ports:
+    - name: "nexus-http"
+      protocol: TCP
+      nodePort: {{ .Values.nexus.nodePort }}
+      port: 8081
+      targetPort: 8081
+  selector:
+    app: {{ template "cicdhub.nexus.name" . }}
+    release: {{ .Release.Name }}
+  type: NodePort
+{{- end }}

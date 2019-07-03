@@ -1,0 +1,61 @@
+---
+- hosts: all
+  become: true
+  gather_facts: no
+  become_method: sudo
+  vars_files:
+    - ansible-variables.yml
+  tasks:
+    - import_role:
+        name: initial-setup
+
+    - import_role:
+        name: docker
+      vars:
+        docker_insecure_registries: 
+        - "{{ kubeadm_advertise_address if kubeadm_advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:32736"
+      when: docker|default(False)|bool == True
+
+    - import_role:
+        name: kubeadm
+      when: kubeadm|default(False)|bool == True
+
+    - import_role:
+        name: helm
+      when: helm|default(False)|bool == True
+ 
+    - import_role:
+        name: cicdhub
+      when: cicdhub|default(False)|bool == True
+
+    - import_role:
+        name: cicdhub-proxy
+      when: cicdhub|default(False)|bool == True
+
+    - name: Determine LM sources from bootstrap
+      set_fact:
+        lm_charts_strategy: "from_package"
+        lm_charts_package: "http://{{cicdhub_addr_nexus_host}}:{{cicdhub_addr_nexus_port}}/repository/raw/lm-helm-charts/{{bootstrap_lm_helm_charts_path | basename }}"
+        lm_docker_strategy: "from_registry"
+        lm_docker_registry_host: "{{cicdhub_addr_docker_registry_host}}"
+        lm_docker_registry_port: "{{cicdhub_addr_docker_registry_port}}"
+      when: lm|default(False)|bool == True and lm_use_bootstrap_sources|default(False)|bool == True
+
+    - import_role:
+        name: lifecyclemanager
+      when: lm|default(False)|bool == True
+
+    - import_role:
+        name: lifecyclemanager-proxy
+      when: lm|default(False)|bool == True and lm_proxy|default(False)|bool == True
+
+    - import_role: 
+        name: ansiblerm
+      vars:
+        arm_onboard: "{{ lm|default(False)|bool == True }}"
+        arm_onboard_addr: "{{ lm_proxy_api_addr|default('') }}" #set by lifecyclemanager-proxy role
+        arm_onboard_auth: "{{ (lm_secure|default(False)|bool) == True }}"
+        arm_docker_location_lm_ip: "{{ kubeadm_advertise_address if kubeadm_advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+        arm_docker_location_relay_addr: "{{ kubeadm_advertise_address if kubeadm_advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:31285"
+        arm_onboard_client_secret: "{{ lm_admin_secret|default('') }}"
+      when: arm|default(False)|bool == True

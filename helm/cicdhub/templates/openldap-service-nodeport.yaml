@@ -1,0 +1,28 @@
+{{- if .Values.openldap.enabled}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cicdhub.openldap.fullname" $ }}-nodeport
+  labels:
+    app: {{ template "cicdhub.openldap.name" . }}
+    chart: {{ template "cicdhub.openldap.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  clusterIP: {{ .Values.openldap.service.clusterIP | quote }}
+  ports:
+    - name: ldap-port
+      protocol: TCP
+      port: {{ .Values.openldap.service.ldapPort }}
+      targetPort: ldap-port
+      nodePort: {{ .Values.openldap.service.nodePort }}
+    - name: ssl-ldap-port
+      protocol: TCP
+      port: {{ .Values.openldap.service.sslLdapPort }}
+      targetPort: ssl-ldap-port
+      nodePort: {{ .Values.openldap.service.sslNodePort }}
+  selector:
+    app: {{ template "cicdhub.openldap.name" . }}
+    release: {{ .Release.Name }}
+  type: NodePort
+{{- end }}

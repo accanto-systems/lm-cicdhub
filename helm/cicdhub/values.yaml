@@ -1,0 +1,147 @@
+## Global settings used across all LM subcharts
+global:
+  security:
+    enabled: false
+
+  ## Openldap values shared with the other helm charts  
+  ldap:
+    ## LDAP's manager password
+    managerPassword: admin
+    ## LDAP's domain
+    domain: lm.com
+
+## Helper to create Persistence Volumes for the foundation services with persistence.enabled
+## Should only be used in single node Kubernetes deployments, as Persistence Volumes will be created using the hostPath type (https://kubernetes.io/docs/concepts/storage/volumes/#hostpath)
+## Each volume will be tailored towards the size requirements, specified by the values, of each foundation service requiring persistence
+## E.g. a volume will be created with size equal to the cassandra.persistence.size value
+volumesInit:
+  enabled: true
+  ## The directory on the host where volumes will be created. It is important that the user running kubernetes has read/write access to this directory
+  hostPath: /var/cicdhub
+
+nexus:
+  enabled: true
+  replicaCount: 1
+  statefulset:
+    enabled: true
+  persistence:
+    enabled: true
+    storageClass: nexus-storage
+  ingress:
+    enabled: false
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      # allow request payloads of any size
+      nginx.ingress.kubernetes.io/proxy-body-size: 0
+    tls:
+      enabled: false
+  nexusProxy:
+    enabled: false
+  nodePort: 32739
+
+gogs:
+  enabled: true
+  service:
+    httpNodePort: 32734
+    gogs:
+      serviceEnableCaptcha: false
+      databaseHost: lm-cicdhub-postgresql
+      databaseUser: marketplace
+      databasePassword: password
+      databaseName: gogs
+      repositoryUploadMaxFileSize: 10000
+    ingress:
+      enabled: true
+      hosts:
+      - git.cicdhub
+      annotations:
+        # allow request payloads of any size
+        nginx.ingress.kubernetes.io/proxy-body-size: 0
+  persistence:
+    enabled: true
+    storageClass: "gogs-storage"
+    size: 1Gi
+  postgresql:
+    enabled: true
+    install: true
+    postgresUser: marketplace
+    postgresPassword: password
+    persistence:
+      enabled: true
+      storageClass: postgresql-storage
+      accessModes:
+      - ReadWriteOnce
+      size: 5Gi
+
+dockerregistry:
+  enabled: true
+  replicaCount: 1
+  persistence:
+    enabled: true
+    deleteEnabled: true
+    size: 100Gi
+    storageClass: docker-registry-storage
+  service:
+    type: NodePort
+    nodePort: 32736
+  ingress:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: 0
+    hosts:
+    - docker-registry.cicdhub
+
+jenkins:
+  enabled: true
+  master:
+    imageTag: 2.182
+    serviceType: NodePort
+    nodePort: 32732
+    ingress:
+      enabled: true
+      hostName: jenkins-master.cicdhub
+    adminUser: admin
+    adminPassword: admin
+    numExecutors: 2
+    cli: true
+  persistence:
+    enabled: true
+    storageClass: "jenkins-storage"
+    size: 1Gi
+
+## Openldap is an optional dependency for LM. An LDAP server is required when security is enabled, for user management. 
+## Openldap is the out-of-the-box recommendation. 
+## Full documentation for the values allowed in this section can be found at: https://github.com/helm/charts/tree/master/stable/openldap
+## Note: remember to locate the version of the Openldap helm chart in use by viewing the requirements.yaml file of helm-foundation      
+openldap:
+  enabled: true
+  replicaCount: 1
+  persistence:
+    enabled: true
+    size: "5Gi"
+    storageClass: openldap-storage
+  existingSecret: openldap-config
+  env:
+    LDAP_ORGANISATION: "lm"
+    LDAP_BACKEND: "lm"
+    LDAP_REMOVE_CONFIG_AFTER_SETUP: "true"
+  ldapPort: 389
+  sslLdapPort: 636
+  service:
+    type: NodePort
+    nodePort: 32737
+    sslNodePort: 32738
+
+## Recommended container for auto-configuring Openldap with LM defaults. Only used when openldap.enabled
+openldapInit:
+  enabled: true
+
+## Installs the nginx-ingress controller to enable access to services
+nginx-ingress:
+  enabled: true
+  controller:
+    service:
+      type: NodePort
+      nodePorts:
+        http: 32080 #80
+        https: 32443 #443

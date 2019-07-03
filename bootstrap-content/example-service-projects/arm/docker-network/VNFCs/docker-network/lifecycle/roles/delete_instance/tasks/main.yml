@@ -1,0 +1,14 @@
+
+- name: Delete a network, disconnecting all containers
+  docker_network:
+    name: "{{ networkname }}"
+    state: absent
+    force: yes
+
+- name: bring vxlan down
+  command: "ip link set vxlan{{ vni }} down"
+  when: overlay == 'True'
+
+- name: delete vxlan if overlay is true
+  command: "ip link del vxlan{{ vni }}"  
+  when: overlay == 'True'
