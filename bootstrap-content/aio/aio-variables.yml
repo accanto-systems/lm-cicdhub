@@ -1,5 +1,5 @@
-# Configure the AIO to use charts and docker images pushed to the Nexus/Docker registry of the CICDHub
 {% if bootstrap_lm_packages|default(False)|bool == True %}
+# Configure the AIO to use charts and docker images pushed to the Nexus/Docker registry of the CICDHub
 docker_insecure_registries:
   - {{ cicdhub_docker_registry_host }}:{{ cicdhub_docker_registry_port}}
 
