@@ -29,10 +29,18 @@ bootstrap_lm_packages: False
 bootstrap_git_projects: False
 bootstrap_aio: False
 
-# Prevent CICDHub volume directories from being re-created
+# Prevents CICDHub volume directories from being re-created
 cicdhub_init_volumes_directories: False
 ```
 
-_Note: disabling `bootstrap_jenkins_lmctl_slave` has been left out deliberately, as the Jenkins slave will need to be reconfigured_
+_Note_: if any of the listed variables are missing, add them with the appropriate values
 
-Complete the installation and navigate to each service to check your existing data has not been lost.
+_Note_: disabling `bootstrap_jenkins_lmctl_slave` has been left out deliberately, as the Jenkins slave will need to be reconfigured
+
+With the above changes made, complete the installation and navigate to each service to verify that existing data has not been lost.
+
+## Cleanup
+
+On verification that no data has been lost the backup of `/var/cicdhub` (`/var/cicdhub_backup`) can be deleted or moved to permanent backup facility.
+
+It is recommented that the volumes on which the persisted data resides be backed up regularly.

@@ -37,4 +37,4 @@ In addition the playbooks will bootstrap the following content:
 
 # Install
 
-Follow the [Install Instructions](./docs/install_instructions.md)
+Clone this repository and follow the [Install Instructions](./docs/install_instructions.md) to get started

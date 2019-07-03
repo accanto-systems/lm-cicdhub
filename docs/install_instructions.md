@@ -85,7 +85,7 @@ If you are not enabling `lm`, then you should update the `ansible/jenkins-slave-
 
 ### Inventory
 
-Before running the playbook you must modify the host file at `ansible/inventories/cicdhub/host_vars/cicdhub-host.yml` with the details of the host to be installed on.
+Before running the playbook you must modify the host file at `ansible/inventories/cicdhub/host_vars/cicdhub-host.yml` with details of the target install host.
 
 At minimum you will need to configure the address and credentials used for SSH access (values shown are only examples):
 
@@ -122,13 +122,13 @@ ansible-playbook ansible/install-cicdhub.yml -i ansible/inventories/cicdhub/inve
 
 ## Accessing the environment
 
-When the installation is finished open the **Getting Started** project at: http://YOUR_HOST:8001/cicdhub-admin/getting-started
+Once the installation has finished open the **Getting Started** project at: http://YOUR_HOST:8001/cicdhub-admin/getting-started
 
-Alternatively following services can be accessed as follows:
+Alternatively, the following services can be accessed as follows:
 
 | **CICDHub Services**        | Address                                                |
 | --------------------------- | ------------------------------------------------------ |
-| **K8s Dashboard**           | <http://YOUR_HOST:31443>                               |
+| **Kubernetes Dashboard**    | <http://YOUR_HOST:31443>                               |
 | **Docker Registry**         | <http://YOUR_HOST:32736>                               |
 | **Gogs (Git)**              | <http://YOUR_HOST:8001>                                |
 | **Nexus**                   | <http://YOUR_HOST:8002>                                |
