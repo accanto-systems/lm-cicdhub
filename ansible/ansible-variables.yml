@@ -178,8 +178,8 @@ lm_secure: True
 
 ## Used to theme the LM UI
 #lm_theme: False
-#lm_theme_directory: path to directory containing theme.tar (mandatory name)
-#lm_theme_name: name of theme
+#lm_theme_directory: path to directory containing 'theme.tar' (mandatory name)
+#lm_theme_name: name of theme (name of theme directory inside the theme.tar to be used)
 
 ## The following are optionally installed with LM, set to False or comment out to disable them
 lm_kibana_enabled: True

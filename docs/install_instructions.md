@@ -13,7 +13,13 @@ A server with 32G Memory, 4+ CPUs, 2T storage is recommended to host the CICDHub
 To install the CICDHub you will need [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) (tested on v2.8.1) on your machine. You may also need sshpass installed if password access is being used to the server.
 
 ```
-apt-get install sshpass
+sudo apt-get install sshpass
+```
+
+Ensure `python-apt` is installed, this may be needed when using v2.8+
+
+```
+sudo apt-get install python-apt
 ```
 
 #### Ansible-Roles
@@ -128,7 +134,7 @@ Alternatively, the following services can be accessed as follows:
 
 | **CICDHub Services**        | Address                                                |
 | --------------------------- | ------------------------------------------------------ |
-| **Kubernetes Dashboard**    | <http://YOUR_HOST:31443>                               |
+| **Kubernetes Dashboard**    | <https://YOUR_HOST:31443>                              |
 | **Docker Registry**         | <http://YOUR_HOST:32736>                               |
 | **Gogs (Git)**              | <http://YOUR_HOST:8001>                                |
 | **Nexus**                   | <http://YOUR_HOST:8002>                                |
@@ -137,6 +143,6 @@ Alternatively, the following services can be accessed as follows:
 | **LM UI** (if enabled)      | <https://YOUR_HOST:8080>                               |
 | **LM API** (if enabled)     | <https://YOUR_HOST:8081>                               |
 | **LM Kibana** (if enabled)  | <http://YOUR_HOST:8083>                                |
-| **Ansible RM** (if enabled) | <https://YOUR_HOST:31080/api/v1.0/resource-manager/ui> |
+| **Ansible RM** (if enabled) | <https://YOUR_HOST:31081/api/v1.0/resource-manager/ui> |
 
 It is highly recommended that you login to each service and change the default passwords (found on the **Getting Started** project)
