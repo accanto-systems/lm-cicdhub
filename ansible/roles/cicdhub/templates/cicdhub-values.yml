@@ -27,7 +27,7 @@ jenkins:
   agent:
     podName: lmctl-slave
     image: lmctlslave
-    imageTag: 0.1
+    imageTag: "{{ bootstrap_jenkins_lmctl_version }}"
     customJenkinsLabels: 'lmctl'
     volumes:
     - type: ConfigMap
