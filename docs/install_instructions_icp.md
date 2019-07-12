@@ -82,7 +82,7 @@ global:
 configurator:
   lmConfigImport:
     ishtar:
-      alm.ishtar.security.ldap.url: "http://<cicdhub-host>:32737"
+      alm.ishtar.security.ldap.url: "ldap://<cicdhub-host>:32737"
   security:
     ldap:
       enabled: false
