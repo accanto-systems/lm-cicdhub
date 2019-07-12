@@ -119,7 +119,7 @@ lm_api_ssl_port: 32443
 
 ### Inventory
 
-The ICP installed inventory consists of two hosts, the CICDHub and the CICDHub proxy.
+The ICP installation inventory consists of two hosts, the CICDHub and the CICDHub proxy.
 
 
 If you want the CICDHub reverse proxy host to be the same as the Ansible controller host, update `ansible/inventories/cicdhub/icp/host_vars/cicdhub-proxy-host.yml` to make the Ansible connection type `local` and then run the Ansible playbook on that host:
