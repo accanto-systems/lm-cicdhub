@@ -1,7 +1,26 @@
 gogs:
   service:
     gogs:
+{% if kubeadm == True %}
       serverRootUrl: http://{{ kubeadm_advertise_address if kubeadm_advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:8001/
+{% endif %}
+{% if icp == True %}
+      serverRootUrl: http://{{ icp_host }}:8001/
+{% endif %}
+
+{% if cicdhub_ingress_controller_enabled|default(True)|bool == False %}
+nginx-ingress:
+  enabled: false
+{% else %}
+nginx-ingress:
+  enabled: true
+  controller:
+    service:
+      type: NodePort
+      nodePorts:
+        http: "{{ cicdhub_ingress_controller_port }}"
+        https: "{{ cicdhub_ingress_controller_https_port }}"
+{% endif %}
 
 {% if bootstrap_jenkins_lmctl_slave|default(False)|bool == True %}
 jenkins:
@@ -24,6 +43,39 @@ volumesInit:
   enabled: true
 {% else %}
   enabled: false  
+{% endif %}
+
+{% if cicdhub_nexus_storage_class is defined %}
+nexus:
+  persistence:
+    storageClass: "{{ cicdhub_nexus_storage_class }}"
+{% endif %}
+
+{% if cicdhub_gogs_storage_class is defined %}
+gogs:
+  persistence:
+    storageClass: "{{ cicdhub_gogs_storage_class }}"
+  postgresql:
+    persistence:
+      storageClass: "{{ cicdhub_gogs_storage_class }}"
+{% endif %}
+
+{% if cicdhub_dockerregistry_storage_class is defined %}
+dockerregistry:
+  persistence:
+    storageClass: "{{ cicdhub_dockerregistry_storage_class }}"
+{% endif %}
+
+{% if cicdhub_jenkins_storage_class is defined %}
+jenkins:
+  persistence:
+    storageClass: "{{ cicdhub_jenkins_storage_class }}"
+{% endif %}
+
+{% if cicdhub_openldap_storage_class is defined %}
+openldap:
+  persistence:
+    storageClass: "{{ cicdhub_openldap_storage_class }}"
 {% endif %}
 
 global: 

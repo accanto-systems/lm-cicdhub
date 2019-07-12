@@ -37,4 +37,4 @@ In addition the playbooks will bootstrap the following content:
 
 # Install
 
-Clone this repository and follow the [Install Instructions](./docs/install_instructions.md) to get started
+Clone this repository and follow the [ICP Install Instructions](./docs/install_instructions_icp.md) to get started on ICP, follow the [Kubeadm Install Instructions](./docs/install_instructions_kubeadm.md) to get started on Kubeadm

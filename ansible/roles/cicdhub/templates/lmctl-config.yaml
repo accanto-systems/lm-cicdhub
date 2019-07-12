@@ -1,12 +1,12 @@
 testing:
   description: Jenkins testing
   alm:
-    ip_address: {{cicdhub_addr_ip}}
+    ip_address: {{ lm_addr_ip }}
     port: '8081'
 {% if lm_secure|default(False)|bool == True %}
     secure_port: True
     username: jack
-    auth_address: {{cicdhub_addr_ip}}
+    auth_address: {{ lm_addr_ip }}
     auth_port: '8080'
     password: jack
 {% else %}
@@ -14,7 +14,7 @@ testing:
 {% endif %}
   arm:
     defaultrm:
-      ip_address: {{cicdhub_addr_ip}}
+      ip_address: {{ lm_addr_ip }}
 {% if arm_secure|default(False)|bool == True %}
       port: '31081'
       secure_port: True

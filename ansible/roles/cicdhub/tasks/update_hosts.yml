@@ -1,6 +1,16 @@
-- name: Update hosts
+- name: Update hosts (Kubeadm)
   lineinfile: 
     dest: /etc/hosts 
     line: "{{ kubeadm_advertise_address if kubeadm_advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }} docker-registry.cicdhub nexus.cicdhub jenkins-master.cicdhub git.cicdhub openldap.cicdhub" 
     state: present
   become: yes
+  when: kubeadm == True
+
+- name: Update hosts (ICP)
+  lineinfile: 
+    dest: /etc/hosts
+    line: "{{ icp_host }} docker-registry.cicdhub nexus.cicdhub jenkins-master.cicdhub git.cicdhub openldap.cicdhub" 
+    state: present
+  become: yes
+  when: icp == True
+

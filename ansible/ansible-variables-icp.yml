@@ -1,0 +1,126 @@
+---
+####################################################################################
+# General System Variables
+####################################################################################
+
+# Set the hostname of the target machine
+# hostname: "cicdhub"
+
+####################################################################################
+# Kubernetes
+####################################################################################
+
+icp: True
+icp_host: 10.220.217.11
+icp_port: 8001
+icp_auth_token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdF9oYXNoIjoiZHRrdTBhN2dkN3Z4dndxcGgxdGEiLCJyZWFsbU5hbWUiOiJjdXN0b21SZWFsbSIsInVuaXF1ZVNlY3VyaXR5TmFtZSI6ImFkbWluIiwiaXNzIjoiaHR0cHM6Ly9teWNsdXN0ZXIuaWNwOjk0NDMvb2lkYy9lbmRwb2ludC9PUCIsImF1ZCI6IjNlZjg4NzUxNDc3NDQ3ODEwNzgxZTA5YTM4MGRjMmQ4IiwiZXhwIjoxNTYyOTUxMjEzLCJpYXQiOjE1NjI5MjI0MTMsInN1YiI6ImFkbWluIiwidGVhbVJvbGVNYXBwaW5ncyI6W119.nzftsrEf7NuNFkykzIyTr2hLdsVvqDlfnmp5aPYyjJ2fatK2Th7XAVLEfNamTIf--NJzYkWcBxeWWOdzJlwbvknDT7DWBimUSEbUMPkMlLKwVAuR0P8tyMgMPCZsF33tEhm6nFl6o_SjPhAf2EppEzdnWlFlD8sMo4Bv0h7SIideMuf1eerSU8yaod_tUvOU4GwIe7VI44_mDhqttOk-sKasU6Yni4siOZ5Getgq47vz5Rysa1DbhIHShJBCxtNjaP50rFuuHcCvfo1oVTuYbLUzSAI5Odoy5ahggR_HpqYmPTu6GgiXSNCpR0odPZ8liYJQ2OgGcUgl_YAzPaWH1g"
+
+kubeadm: False
+
+####################################################################################
+# CICDHub
+####################################################################################
+
+## Disable to prevent installation of CICDHub components
+cicdhub: True
+
+##################################
+# CICDHub - Helm Chart
+##################################
+
+cicdhub_chart_strategy: from_chart_src
+cicdhub_chart_package: ../helm/cicdhub
+
+## Path to a helm values file to be included on the install of Cicdhub Helm chart
+cicdhub_values: cicdhub-helm-values.yml
+
+## Recommendation is to use a storage class e.g. Glusterfs or Longhorn for ICP
+cicdhub_init_volumes: False
+cicdhub_init_volumes_directories: False
+
+cicdhub_ingress_controller_enabled: True
+# set this to 32080 to be consistent with kubeadm and to avoid port 80 (which is used by ICP official Ingress Controller)
+cicdhub_ingress_controller_port: 32080
+cicdhub_ingress_controller_https_port: 32443
+
+## Persistent volume storage classes (these are assumed to already exist in ICP if "cicdhub_init_volumes" is False)
+cicdhub_nexus_storage_class: longhorn
+cicdhub_gogs_storage_class: longhorn
+cicdhub_dockerregistry_storage_class: longhorn
+cicdhub_jenkins_storage_class: longhorn
+cicdhub_openldap_storage_class: longhorn
+
+# Set CICDHub Openldap password
+cicdhub_ldap_manager_password: admin
+
+##################################
+# CICDHub - Bootstrap Content
+##################################
+
+## Creates popular repository types in Nexus and the repository needed to bootstrap_aio and bootstrap_lm_packages
+bootstrap_nexus_repositories: True
+
+## Creates Git projects with the example NS and VNF services
+## __PLAY substituted for the playbook directory
+bootstrap_git_projects: True
+bootstrap_git_project_defs:
+  - name: hello-world-service
+    content: "__PLAY/../bootstrap-content/example-service-projects/arm/hello-world-service"
+    template: True
+    template_fileexts: 
+      - ".md"
+  - name: docker-network
+    content: "__PLAY/../bootstrap-content/example-service-projects/arm/docker-network"
+    template: True
+    template_fileexts: 
+      - ".md"
+  - name: ip-pbx
+    content: "__PLAY/../bootstrap-content/example-service-projects/arm/ip-pbx"
+    template: True
+    template_fileexts: 
+      - ".md"
+  - name: sip-performance
+    content: "__PLAY/../bootstrap-content/example-service-projects/arm/sip-performance"
+    template: True
+    template_fileexts: 
+      - ".md"
+  - name: getting-started
+    content: "__PLAY/../bootstrap-content/cicdhub-docs"
+    template: True
+    template_fileexts: 
+      - ".md"
+bootstrap_git_username: cicdhub-admin
+bootstrap_git_password: cicdhub-admin
+bootstrap_git_email: admin@example.com
+
+## Pushes an AIO config file to Nexus, that may be used on an AIO to pull the necessary packages from the this CICDHub
+# LM packages only included if bootstrap_lm_packages is set to True
+bootstrap_aio: True
+bootstrap_aio_path: ../bootstrap-content/aio/aio-variables.yml
+
+## Configures a Jenkins jnlp slave with lmctl installed
+bootstrap_jenkins_lmctl_slave: True
+bootstrap_jenkins_lmctl_version: 2.0.4
+# Path to an Lmctl config file for the target LM environment to be used by the slave
+bootstrap_jenkins_lmctl_config_file: ./jenkins-slave-lmctl-config.yaml
+
+## Pushes the LM Helm Charts package to Nexus and Docker Images to the Docker Registry
+## This makes them available for the All-in-one
+bootstrap_lm_packages: False
+bootstrap_lm_docker_source_path: ../bootstrap-content/lm-artifacts/lm-docker-source-<LM_VERSION>-dist.tgz
+bootstrap_lm_helm_charts_path: ../bootstrap-content/lm-artifacts/lm-helm-charts-<LM_VERSION>-dist.tgz
+
+####################################################################################
+# Lifecycle Manager
+####################################################################################
+
+## "lm_address" is the IP address of an ALM reverse proxy to allow CICDHub (Jenkins) to connect to a running ALM
+## Set to the IP address of ALM reverse proxy
+lm_address: 10.220.217.113
+
+## Set to true if the ALM that CICDHub connects to is secure
+lm_secure: True
+
+## ALM Username and password you would use to log in the UI
+lm_username: jack
+lm_password: jack

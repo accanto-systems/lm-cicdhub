@@ -1,0 +1,30 @@
+---
+# cicdhub is the host that is used to install CICDHub in ICP and configure it
+- hosts: cicdhub
+  become: true
+  gather_facts: no
+  become_method: sudo
+  vars_files:
+    - ansible-variables-icp.yml
+  tasks:
+    - import_role:
+        name: initial-setup
+
+    - import_role:
+        name: cicdhub
+      when: cicdhub|default(False)|bool == True
+
+# cicdhub-proxy is the host on which the CICDHub reverse proxy is installed
+- hosts: cicdhub-proxy
+  become: true
+  gather_facts: no
+  become_method: sudo
+  vars_files:
+    - ansible-variables-icp.yml
+  tasks:
+    - import_role:
+        name: initial-setup
+
+    - import_role:
+        name: cicdhub-proxy
+      when: cicdhub|default(False)|bool == True

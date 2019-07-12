@@ -30,45 +30,11 @@ The CICDHub playbook depends on several ansible-roles, to pull them you must use
 ansible-galaxy install -r ansible/requirements.yml -p ansible/roles
 ```
 
-#### Stratoss Lifecycle Manager
-
-The Stratoss&trade; Lifecycle Manager is an optionally installed component of the CICDHub, to be used as a testing environment from Jenkins pipeline jobs. Alternatively, you can connect the CICDHub to an existing installation of Stratoss LM - see [Jenkins LM Environment](#jenkins-lm-environment) and skip this section.
-
-To enable the installation of Stratoss LM, you need the following artifacts:
-
-- Lifecycle Manager helm charts
-- Lifecycle Manager docker images
-
-Once you have obtained a version of each, from your usual release cycle, copy each to `bootstrap-content/lm-artifacts`:
-
-```
-bootstrap-content/
-  /lm-artifacts
-    lm-docker-source-2.0.3-207-dist.tgz
-    lm-helm-charts-2.0.3-207-dist.tgz
-```
-
-Update the references to these files in `ansible/ansible-variables.yml`:
-
-```
-bootstrap_lm_packages: True
-bootstrap_lm_docker_source_path: ../bootstrap-content/lm-artifacts/lm-docker-source-2.0.3-207-dist.tgz
-bootstrap_lm_helm_charts_path: ../bootstrap-content/lm-artifacts/lm-helm-charts-2.0.3-207-dist.tgz
-```
-
-Enable `lm` and `lm_proxy` in `ansible/ansible-variables.yml`:
-
-```
-lm: True
-lm_proxy: True
-arm: True
-```
-
 ## Configuration
 
 ### Variables
 
-Read through the `ansible/ansible-variables.yml` file and update as required. You can enable/disable features, configure location of helm charts and docker registries etc. This file includes commented documentation to explain the purpose of each variable.
+Read through the `ansible/ansible-variables-kubeadm.yml` file and update as required. You can enable/disable features, configure location of helm charts and docker registries etc. This file includes commented documentation to explain the purpose of each variable.
 
 At minimum it is recommended that you consider updating the following to ensure the defaults will allow you to access your environment correctly:
 
@@ -82,16 +48,61 @@ In addition it is recommended you consider updating the following passwords to p
 
 ```
 cicdhub_ldap_manager_password:
-lm_admin_secret:
 ```
 
-### Jenkins LM Environment
+### Connecting a Slave ALM to a CICDHub
 
-If you are not enabling `lm`, then you should update the `ansible/jenkins-slave-lmctl-config.yaml` file. This file is used by the Jenkins environment to grant access to a Stratoss LM environment for NS and VNF testing. Update the addresses and ports in this file with the values used to access your target LM host.
+A slave ALM is an ALM deployment that connects to CICDHub. The potential benefits to connecting ALM to CICDHub are:
+
+- shared Openldap - your user account only needs to be defined once
+- shared lm-artifacts - no need to find LM installation packages, they can be downloaded from the CICDHub
+
+Configure your slave ALM to use CICDHub Openldap by adding the following to your Helm values file when installing lm-configurator:
+
+```
+global: 
+  ldap:
+    # admin is the default
+    managerPassword: "admin"
+
+configurator:
+  lmConfigImport:
+    ishtar:
+      alm.ishtar.security.ldap.url: "http://<cicdhub-host>:32737"
+  security:
+    ldap:
+      enabled: false
+```
+
+Configure your slave LM to pull LM Docker images from CICDHub Nexus:
+
+```
+global: 
+  docker:
+    registryEnabled: true
+    registryIp: "<cicdhub-host>"
+    registryPort: "32736"
+```
+### Connecting CICDHub to a Pre-Existing ALM Installation
+
+CICDHub can be installed to work with a pre-existing ALM installation (so that CI/CD jobs can use ALM). For this to work, the ALM installation must have Kubernetes Ingress enabled, and a reverse proxy must be installed in front of the ALM installation that directs to the Kubernetes Ingress Controller.
+
+To configure this, ensure that `lm_address` points to the machine where the Kubernetes Ingress Controller is running.
+
+```
+lm_address: [IP address of ALM proxy]
+```
+
+and the SSL and non-SSL ports are configured to the Kubernetes Ingress Controller ports:
+
+```
+lm_api_non_ssl_port: 32080
+lm_api_ssl_port: 32443
+```
 
 ### Inventory
 
-Before running the playbook you must modify the host file at `ansible/inventories/cicdhub/host_vars/cicdhub-host.yml` with details of the target install host.
+Before running the playbook you must modify the host file at `ansible/inventories/cicdhub/kubeadm/host_vars/cicdhub-host.yml` with details of the target install host.
 
 At minimum you will need to configure the address and credentials used for SSH access (values shown are only examples):
 
@@ -120,10 +131,10 @@ This can be avoided in several ways:
 
 ## Install
 
-Run the `install-cicdhub.yml` playbook, referencing the inventory modified earlier:
+Run the `install-cicdhub-kubeadm.yml` playbook, referencing the inventory modified earlier:
 
 ```
-ansible-playbook ansible/install-cicdhub.yml -i ansible/inventories/cicdhub/inventory
+ansible-playbook ansible/install-cicdhub-kubeadm.yml -i ansible/inventories/cicdhub/kubeadm/inventory
 ```
 
 ## Accessing the environment
@@ -140,9 +151,5 @@ Alternatively, the following services can be accessed as follows:
 | **Nexus**                   | <http://YOUR_HOST:8002>                                |
 | **Jenkins**                 | <http://YOUR_HOST:8003>                                |
 | **Openldap**                | <http://YOUR_HOST:32737>                               |
-| **LM UI** (if enabled)      | <https://YOUR_HOST:8080>                               |
-| **LM API** (if enabled)     | <https://YOUR_HOST:8081>                               |
-| **LM Kibana** (if enabled)  | <http://YOUR_HOST:8083>                                |
-| **Ansible RM** (if enabled) | <https://YOUR_HOST:31081/api/v1.0/resource-manager/ui> |
 
 It is highly recommended that you login to each service and change the default passwords (found on the **Getting Started** project)

@@ -28,9 +28,19 @@
 
 - import_tasks: update_hosts.yml
 
-- name: Gather CICDHub IP Address
+- name: Set CICDHub IP Address (kubeadm)
   set_fact:
     cicdhub_addr_ip: "{{ kubeadm_advertise_address if kubeadm_advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+  when: kubeadm == True
+
+- name: Set CICDHub IP Address (ICP)
+  set_fact:
+    cicdhub_addr_ip: "{{ icp_host }}"
+  when: icp == True
+
+- name: Set LM IP Address
+  set_fact:
+    lm_addr_ip: "{{ lm_address if lm_address is defined else cicdhub_addr_ip }}"
 
 - name: Establish CICDHub Address Parts
   set_fact:

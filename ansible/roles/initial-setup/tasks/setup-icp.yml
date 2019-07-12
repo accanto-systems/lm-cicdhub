@@ -1,0 +1,49 @@
+- name: Update apt cache
+  raw: apt-get -y update
+
+- name: If needed, install Python
+  raw: apt-get -y install python python-pip
+
+- name: Install base dependencies
+  apt: 
+    name: 
+      - python
+      - python-pip
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - build-essential
+      - git
+      - software-properties-common
+      - openvswitch-switch
+      - htop
+    state: present 
+  become: yes
+
+- name: Install Pip dependencies
+  pip:
+    name:
+      - jsonpointer>=2.0
+      - twine>=1.13.0
+
+- name: Gather Facts
+  setup: 
+
+- name: Set ICP URI
+  set_fact:
+    icp_uri: "{{icp_host}}:{{icp_port}}"
+
+- name: Configure ICP Kubectl 1
+  shell: "kubectl config set-cluster icp --server=https://{{ icp_uri }} --insecure-skip-tls-verify=true"
+
+- name: Configure ICP Kubectl 2
+  shell: "kubectl config set-context icp-context --cluster=icp"
+
+- name: Configure ICP Kubectl 3
+  shell: "kubectl config set-credentials admin --token={{ icp_auth_token }}"
+
+- name: Configure ICP Kubectl 4
+  shell: "kubectl config set-context icp-context --user=admin --namespace=default"
+
+- name: Configure ICP Kubectl 5
+  shell: "kubectl config use-context icp-context"
