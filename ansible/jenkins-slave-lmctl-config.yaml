@@ -1,7 +1,7 @@
 testing:
   description: Jenkins slave testing environment
   alm:
-    # The host address of the target LM environment API gateway e.g. 192.168.99.100 (do not add http:// or https://)
+    # The host address of the target LM environment API gateway (reverse proxy) e.g. 192.168.99.100 (do not add http:// or https://)
     ip_address: {{ lm_addr_ip }}
     # API gateway Port
     port: '8081'
@@ -9,10 +9,10 @@ testing:
     # Enable when HTTPs is used to access the above ip_address
     secure_port: True
     # Username and password you would use to log in the UI
-    username: "{{ lm_username }}"
-    password: "{{ lm_password }}"
+    username: '{{ lm_username }}'
+    password: '{{ lm_password }}'
     # The host address of the target LM environment UI, used for authentication (if different from ip_address)
-    auth_address: "{{ lm_addr_ip }}"
+    auth_address: '{{ lm_addr_ip }}'
     # UI Port
     auth_port: '8080'
 {% else %}
@@ -22,17 +22,17 @@ testing:
     defaultrm:
       # The host address of the target Ansible RM environment e.g. 192.168.99.100 (do not add http:// or https://)
       # external ip
-      ip_address: {{ lm_addr_ip }}
+      ip_address: '{{ arm_addr_ip }}'
 {% if arm_secure|default(False)|bool == True %}
-      # API gateway HTTPs Port
-      port: '31081'
+      # ARM HTTPs (Node)Port
+      port: '{{ arm_api_ssl_port }}'
       secure_port: True
-      # Address given to LM when the Ansible RM was onboarded
-      onboarding_addr: https://osslm-ansible-rm:8443
+      # Address given to LM when the Ansible RM is onboarded
+      onboarding_addr: '{{ arm_https_uri }}'
 {% else %}
-      # API gateway HTTP Port
-      port: '31080'
+      # ARM HTTP (Node)Port
+      port: '{{ arm_api_non_ssl_port }}'
       secure_port: False
-      # Address given to LM when the Ansible RM was onboarded
-      onboarding_addr: http://osslm-ansible-rm:8080
+      # Address given to LM when the Ansible RM is onboarded
+      onboarding_addr: '{{ arm_http_uri }}'
 {% endif %}

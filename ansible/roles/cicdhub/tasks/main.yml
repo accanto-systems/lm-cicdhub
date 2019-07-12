@@ -42,6 +42,10 @@
   set_fact:
     lm_addr_ip: "{{ lm_address if lm_address is defined else cicdhub_addr_ip }}"
 
+- name: Set ARM IP Address
+  set_fact:
+    arm_addr_ip: "{{ arm_addr_ip if arm_addr_ip is defined else lm_addr_ip }}"
+
 - name: Establish CICDHub Address Parts
   set_fact:
     cicdhub_addr_docker_registry_host: "{{cicdhub_addr_ip}}"

@@ -1,4 +1,4 @@
-# Running the CICDHub
+# Running the CICDHub on ICP
 
 Running CICDHub on ICP assumes the existence of three hosts (or host groups):
 
@@ -41,6 +41,19 @@ ansible-galaxy install -r ansible/requirements.yml -p ansible/roles
 ### Variables
 
 Read through the `ansible/ansible-variables-icp.yml` file and update as required. You can enable/disable features, configure location of the ICP cluster etc. This file includes commented documentation to explain the purpose of each variable.
+
+Make sure that you set the following variables in `ansible/ansible-variables-icp.yml`:
+
+```
+# the ICP master host IP address
+icp_host: 192.168.99.100
+
+# the ICP API port
+icp_port: 8001
+
+# the ICP access token
+icp_auth_token: ...
+```
 
 ### Persistent Volumes
 
@@ -104,17 +117,38 @@ where <cicdhub-host> is the IP address of your ICP master node or one of your IC
 
 CICDHub can be installed to work with a pre-existing ALM installation (so that CI/CD jobs can use ALM). For this to work, the ALM installation must have Kubernetes Ingress enabled, and a reverse proxy must be installed in front of the ALM installation that directs to the Kubernetes Ingress Controller.
 
-To configure this, ensure that `lm_address` points to the machine where the Kubernetes Ingress Controller is running.
+To configure this, ensure that `lm_address` points to the machine where the ALM reverse proxy is running (this will default to the Ansible variable 'icp_host'):
 
 ```
 lm_address: [IP address of ALM proxy]
 ```
 
-and the SSL and non-SSL ports are configured to the Kubernetes Ingress Controller ports:
+Configure whether ALM is running secure:
 
 ```
-lm_api_non_ssl_port: 32080
-lm_api_ssl_port: 32443
+lm_secure: True
+```
+
+If lm_secure is True then set the ALM username and password:
+
+```
+lm_username: jack
+lm_password: jack
+```
+
+If OSSLM Ansible RM is running in a different environment to the external ALM you need to configure how ALM can access it:
+
+```
+arm_https_uri: https://192.168.99.100:31081
+arm_http_uri: http://192.168.99.100:31080
+```
+
+and how the CICDHub can acccess it:
+
+```
+arm_addr_ip: 192.168.99.100
+arm_api_non_ssl_port: 31080
+arm_api_ssl_port: 31081
 ```
 
 ### Inventory

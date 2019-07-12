@@ -11,10 +11,17 @@
 ####################################################################################
 
 icp: True
-icp_host: 10.220.217.11
-icp_port: 8001
-icp_auth_token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdF9oYXNoIjoiZHRrdTBhN2dkN3Z4dndxcGgxdGEiLCJyZWFsbU5hbWUiOiJjdXN0b21SZWFsbSIsInVuaXF1ZVNlY3VyaXR5TmFtZSI6ImFkbWluIiwiaXNzIjoiaHR0cHM6Ly9teWNsdXN0ZXIuaWNwOjk0NDMvb2lkYy9lbmRwb2ludC9PUCIsImF1ZCI6IjNlZjg4NzUxNDc3NDQ3ODEwNzgxZTA5YTM4MGRjMmQ4IiwiZXhwIjoxNTYyOTUxMjEzLCJpYXQiOjE1NjI5MjI0MTMsInN1YiI6ImFkbWluIiwidGVhbVJvbGVNYXBwaW5ncyI6W119.nzftsrEf7NuNFkykzIyTr2hLdsVvqDlfnmp5aPYyjJ2fatK2Th7XAVLEfNamTIf--NJzYkWcBxeWWOdzJlwbvknDT7DWBimUSEbUMPkMlLKwVAuR0P8tyMgMPCZsF33tEhm6nFl6o_SjPhAf2EppEzdnWlFlD8sMo4Bv0h7SIideMuf1eerSU8yaod_tUvOU4GwIe7VI44_mDhqttOk-sKasU6Yni4siOZ5Getgq47vz5Rysa1DbhIHShJBCxtNjaP50rFuuHcCvfo1oVTuYbLUzSAI5Odoy5ahggR_HpqYmPTu6GgiXSNCpR0odPZ8liYJQ2OgGcUgl_YAzPaWH1g"
 
+## Hostname of the ICP master node (must be set)
+#icp_host: 192.168.99.100
+
+## ICP Kubernetes API port
+icp_port: 8001
+
+## ICP access token (must be set)
+#icp_auth_token:
+
+## This is false for ICP install
 kubeadm: False
 
 ####################################################################################
@@ -111,16 +118,38 @@ bootstrap_lm_docker_source_path: ../bootstrap-content/lm-artifacts/lm-docker-sou
 bootstrap_lm_helm_charts_path: ../bootstrap-content/lm-artifacts/lm-helm-charts-<LM_VERSION>-dist.tgz
 
 ####################################################################################
-# Lifecycle Manager
+# External Lifecycle Manager
 ####################################################################################
 
 ## "lm_address" is the IP address of an ALM reverse proxy to allow CICDHub (Jenkins) to connect to a running ALM
-## Set to the IP address of ALM reverse proxy
-lm_address: 10.220.217.113
+## Set to the IP address of ALM reverse proxy, defaults to 'kubeadm_advertise_address' or the IP address chosen by Ansible if 'kubeadm_advertise_address' is not explicitly set.
+#lm_address: 10.220.217.113
 
 ## Set to true if the ALM that CICDHub connects to is secure
 lm_secure: True
 
-## ALM Username and password you would use to log in the UI
+## ALM Username and password you would use to log in the UI if lm_secure == True
 lm_username: jack
 lm_password: jack
+
+####################################################################################
+# OSS Ansible RM
+####################################################################################
+
+## True if OSS Ansible RM is running with https enabled, false otherwise
+arm_secure: True
+
+## IP address of OSS Ansible RM, defaults to ip_address (set this if OSSLM Ansible RM is not running in the same environment as ALM)
+#arm_addr_ip: 192.168.99.100
+
+## These are the OSS Ansible RM (node)ports
+## Override these if different from the defaults below.
+arm_api_non_ssl_port: 31080
+arm_api_ssl_port: 31081
+
+## OSS Ansible RM URIs
+## Override these to allow ALM to access OSSLM Ansible RM if it is not running in the same environment as ALM.
+arm_https_uri: https://osslm-ansible-rm:8443
+arm_http_uri: http://osslm-ansible-rm:8080
+#arm_https_uri: https://192.168.99.100:31081
+#arm_http_uri: http://192.168.99.100:31080

@@ -1,4 +1,4 @@
-# Running the CICDHub
+# Running the CICDHub on Kubeadm
 
 ## Pre-requisites
 
@@ -90,17 +90,38 @@ where <cicdhub-host> is the IP address of your kubeadm host.
 
 CICDHub can be installed to work with a pre-existing ALM installation (so that CI/CD jobs can use ALM). For this to work, the ALM installation must have Kubernetes Ingress enabled, and a reverse proxy must be installed in front of the ALM installation that directs to the Kubernetes Ingress Controller.
 
-To configure this, ensure that `lm_address` points to the machine where the Kubernetes Ingress Controller is running.
+To configure this, ensure that `lm_address` points to the machine where the ALM reverse proxy is running (this will default to the Kubeadm machine):
 
 ```
 lm_address: [IP address of ALM proxy]
 ```
 
-and the SSL and non-SSL ports are configured to the Kubernetes Ingress Controller ports:
+Configure whether ALM is running secure:
 
 ```
-lm_api_non_ssl_port: 32080
-lm_api_ssl_port: 32443
+lm_secure: True
+```
+
+If lm_secure is True then set the ALM username and password:
+
+```
+lm_username: jack
+lm_password: jack
+```
+
+If OSSLM Ansible RM is running in a different environment to the external ALM you need to configure how ALM can access it:
+
+```
+arm_https_uri: https://192.168.99.100:31081
+arm_http_uri: http://192.168.99.100:31080
+```
+
+and how the CICDHub can acccess it:
+
+```
+arm_addr_ip: 192.168.99.100
+arm_api_non_ssl_port: 31080
+arm_api_ssl_port: 31081
 ```
 
 ### Inventory
