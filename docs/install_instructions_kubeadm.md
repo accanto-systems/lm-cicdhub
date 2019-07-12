@@ -83,6 +83,9 @@ global:
     registryIp: "<cicdhub-host>"
     registryPort: "32736"
 ```
+
+where <cicdhub-host> is the IP address of your kubeadm host.
+
 ### Connecting CICDHub to a Pre-Existing ALM Installation
 
 CICDHub can be installed to work with a pre-existing ALM installation (so that CI/CD jobs can use ALM). For this to work, the ALM installation must have Kubernetes Ingress enabled, and a reverse proxy must be installed in front of the ALM installation that directs to the Kubernetes Ingress Controller.
