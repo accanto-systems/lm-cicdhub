@@ -7,6 +7,14 @@
   vars_files:
     - ansible-variables-icp.yml
   tasks:
+    - debug: 
+        msg: "icp_host is required"
+      failed_when: icp_host is not defined or icp_host == ""
+
+    - debug: 
+        msg: "icp_auth_token is required"
+      failed_when: icp_auth_token is not defined or icp_auth_token == ""
+
     - import_role:
         name: initial-setup
 

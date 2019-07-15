@@ -26,8 +26,6 @@
 - import_tasks: prepare_volumes_directories.yml
 - import_tasks: install_cicdhub.yml
 
-- import_tasks: update_hosts.yml
-
 - name: Set CICDHub IP Address (kubeadm)
   set_fact:
     cicdhub_addr_ip: "{{ kubeadm_advertise_address if kubeadm_advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
@@ -40,6 +38,7 @@
 
 - name: Set LM IP Address
   set_fact:
+    # TODO for ICP this should be hostvars[inventory_hostname]['ansible_default_ipv4']['address']
     lm_addr_ip: "{{ lm_address if lm_address is defined else cicdhub_addr_ip }}"
 
 - name: Set ARM IP Address
@@ -60,6 +59,8 @@
     cicdhub_addr_nexus: "http://{{cicdhub_addr_nexus_host}}:{{cicdhub_addr_nexus_port}}"
     cicdhub_addr_docker_registry: "http://{{cicdhub_addr_docker_registry_host}}:{{cicdhub_addr_docker_registry_port}}"
     cicdhub_addr_git: "http://{{cicdhub_addr_git_host}}:{{cicdhub_addr_git_port}}"
+
+- import_tasks: update_hosts.yml
 
 - import_tasks: create_nexus_repositories.yml
   when: bootstrap_nexus_repositories|default(False) == True

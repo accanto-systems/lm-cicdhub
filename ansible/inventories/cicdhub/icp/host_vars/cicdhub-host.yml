@@ -1,6 +1,4 @@
 ---
-#ansible_host: 10.220.217.113
-#ansible_connection: ssh
 ansible_connection: local
 ansible_ssh_user: accanto
 ansible_ssh_pass: accanto

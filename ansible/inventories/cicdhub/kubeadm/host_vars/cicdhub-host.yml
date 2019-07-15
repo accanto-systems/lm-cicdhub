@@ -1,7 +1,6 @@
 ---
-#ansible_host: 10.220.217.113
-#ansible_connection: ssh
-ansible_connection: local
-ansible_ssh_user: accanto
-ansible_ssh_pass: accanto
-ansible_become_pass: accanto
+ansible_host: 192.168.56.100
+ansible_connection: ssh
+ansible_ssh_user: user
+ansible_ssh_pass: pass
+ansible_become_pass: pass
