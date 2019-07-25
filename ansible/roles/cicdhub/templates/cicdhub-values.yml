@@ -1,10 +1,12 @@
+{% if kubeadm == True %}
 gogs:
   service:
     gogs:
-{% if kubeadm == True %}
       serverRootUrl: http://{{ kubeadm_advertise_address if kubeadm_advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:8001/
-{% endif %}
-{% if icp == True %}
+{% elif icp == True %}
+gogs:
+  service:
+    gogs:
       serverRootUrl: http://{{ icp_host }}:8001/
 {% endif %}
 

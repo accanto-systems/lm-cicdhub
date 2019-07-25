@@ -10,8 +10,6 @@
 # Kubernetes
 ####################################################################################
 
-icp: True
-
 ## Hostname of the ICP master node (must be set)
 #icp_host: 192.168.99.100
 
@@ -20,9 +18,6 @@ icp_port: 8001
 
 ## ICP access token (must be set)
 #icp_auth_token:
-
-## This is false for ICP install
-kubeadm: False
 
 ####################################################################################
 # CICDHub

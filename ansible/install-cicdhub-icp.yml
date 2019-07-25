@@ -7,6 +7,11 @@
   vars_files:
     - ansible-variables-icp.yml
   tasks:
+    - name: Configure ICP installation
+      set_fact: 
+        kubeadm: False
+        icp: True
+
     - debug: 
         msg: "icp_host is required"
       failed_when: icp_host is not defined or icp_host == ""
@@ -30,6 +35,11 @@
   vars_files:
     - ansible-variables-icp.yml
   tasks:
+    - name: Configure ICP installation
+      set_fact: 
+        kubeadm: False
+        icp: True
+
     - import_role:
         name: initial-setup
 
