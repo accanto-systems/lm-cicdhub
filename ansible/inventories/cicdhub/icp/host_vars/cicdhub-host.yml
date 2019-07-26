@@ -1,3 +1,4 @@
+# note: this is the machine that is installing CICDHub on ICP, not ICP itself
 ---
 ansible_connection: local
 ansible_ssh_user: accanto

@@ -18,6 +18,14 @@
     - import_role:
         name: initial-setup
 
+    # note: this is needed to build custom Jenkins Docker image (and any others)
+    - import_role:
+        name: docker
+      vars:
+        docker_insecure_registries: 
+        - "{{ icp_host }}:32736"
+      when: docker|default(False)|bool == True
+
     - import_role:
         name: cicdhub
       when: cicdhub|default(False)|bool == True

@@ -19,7 +19,7 @@
 
     - import_role:
         name: kubeadm
-      when: k8s_type|default('kubeadm')|string == 'kubeadm'
+      when: kubeadm|default(True)|bool == True
 
     - import_role:
         name: helm
