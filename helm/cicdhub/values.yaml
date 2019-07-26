@@ -28,7 +28,7 @@ nexus:
     enabled: true
     storageClass: nexus-storage
   ingress:
-    enabled: false
+    enabled: true
     annotations:
       kubernetes.io/ingress.class: nginx
       # allow request payloads of any size
@@ -36,7 +36,10 @@ nexus:
     tls:
       enabled: false
   nexusProxy:
-    enabled: false
+    enabled: true
+    env:
+      nexusDockerHost: docker-registry.cicdhub
+      nexusHttpHost: nexus.cicdhub
   nodePort: 32739
 
 gogs:

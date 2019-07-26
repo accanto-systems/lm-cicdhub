@@ -2,28 +2,28 @@
 # cicdhub is the host on which kubeadm, CICDHub and CICDHub reverse proxy are installed
 - hosts: cicdhub
   become: true
-  gather_facts: no
+  gather_facts: yes
   become_method: sudo
   vars_files:
-    - ansible-variables-kubeadm.yml
+    - ansible-variables-microk8s.yml
   tasks:
     - import_role:
         name: initial-setup
 
-    - import_role:
-        name: docker
-      vars:
-        docker_insecure_registries: 
-        - "{{ advertise_address if advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:32736"
-      when: docker|default(False)|bool == True
+    # - import_role:
+    #     name: docker
+    #   vars:
+    #     docker_insecure_registries: 
+    #     - "{{ advertise_address if advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:32736"
+    #   when: docker|default(False)|bool == True
 
     - import_role:
-        name: kubeadm
+        name: microk8s
 
     - import_role:
         name: helm
       when: helm|default(False)|bool == True
- 
+
     - import_role:
         name: cicdhub
       when: cicdhub|default(False)|bool == True

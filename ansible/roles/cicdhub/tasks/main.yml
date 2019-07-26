@@ -28,13 +28,18 @@
 
 - name: Set CICDHub IP Address (kubeadm)
   set_fact:
-    cicdhub_addr_ip: "{{ kubeadm_advertise_address if kubeadm_advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+    cicdhub_addr_ip: "{{ advertise_address if advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
   when: kubeadm == True
 
 - name: Set CICDHub IP Address (ICP)
   set_fact:
     cicdhub_addr_ip: "{{ icp_host }}"
   when: icp == True
+
+- name: Set CICDHub IP Address (microk8s)
+  set_fact:
+    cicdhub_addr_ip: "{{ advertise_address if advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+  when: microk8s == True
 
 - name: Set LM IP Address
   set_fact:

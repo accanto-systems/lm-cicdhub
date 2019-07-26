@@ -2,3 +2,5 @@
   when: kubeadm == True
 - import_tasks: setup-icp.yml
   when: icp == True
+- import_tasks: setup-microk8s.yml
+  when: microk8s == True

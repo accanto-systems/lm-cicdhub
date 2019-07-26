@@ -18,10 +18,9 @@ docker: True
 ####################################################################################
 
 ## Disable to prevent installation of Kubeadm
-kubeadm: True
+microk8s: True
 
-## Leave this as False
-microk8s: False
+kubeadm: False
 icp: False
 
 # In a multi network interface server you can specify which ip address to bind kubeadm to, otherwise comment this variable out
@@ -33,7 +32,7 @@ advertise_address: 10.220.217.118
 # Change this variable to the main network interface or comment out and Ansible will use the default interface name.
 # If you have set `advertise_address` then the recommended way determine the correct flannel_interface is to
 # run `ifconfig` on the target machine, find the entry with the address you used on `advertise_address`, enter the name of that entry here.
-#flannel_interface: "eth1"
+flannel_interface: "ens160"
 
 # Set to 'yes' or 'True' to install the K8s Dashboard with Kubeadm
 kube_dashboard: True
@@ -67,13 +66,20 @@ cicdhub_values: cicdhub-helm-values.yml
 
 ## When using local volumes we need to create the directories and persistent volumes upfront
 ## When re-installing the CICDHub, disable only 'cicdhub_init_volumes_directories' to keep the existing directories and there contents.
-cicdhub_init_volumes: True
-cicdhub_init_volumes_directories: True
+cicdhub_init_volumes: False
+cicdhub_init_volumes_directories: False
 
 cicdhub_ingress_controller_enabled: True
 # set this to 32080 to be consistent with kubeadm and to avoid port 80 (which is used by ICP official Ingress Controller)
 cicdhub_ingress_controller_port: 32080
 cicdhub_ingress_controller_https_port: 32443
+
+## Persistent volume storage classes (these are assumed to already exist in ICP if "cicdhub_init_volumes" is False)
+cicdhub_nexus_storage_class: microk8s-hostpath
+cicdhub_gogs_storage_class: microk8s-hostpath
+cicdhub_dockerregistry_storage_class: microk8s-hostpath
+cicdhub_jenkins_storage_class: microk8s-hostpath
+cicdhub_openldap_storage_class: microk8s-hostpath
 
 # Set CICDHub Openldap password
 cicdhub_ldap_manager_password: admin
@@ -140,8 +146,8 @@ bootstrap_lm_helm_charts_path: ../bootstrap-content/lm-artifacts/lm-helm-charts-
 ####################################################################################
 
 ## "lm_address" is the IP address of an ALM reverse proxy to allow CICDHub (Jenkins) to connect to a running ALM
-## Set to the IP address of ALM reverse proxy, defaults to 'kubeadm_advertise_address' or the IP address chosen by Ansible if 'kubeadm_advertise_address' is not explicitly set.
-#lm_address: 192.168.99.100
+## Set to the IP address of ALM reverse proxy
+lm_address: 10.220.217.118
 
 ## Set to true if the ALM that CICDHub connects to is secure
 lm_secure: True
@@ -157,8 +163,8 @@ lm_password: jack
 ## True if OSS Ansible RM is running with https enabled, false otherwise
 arm_secure: True
 
-## IP address of OSS Ansible RM, defaults to ip_address (set this if OSSLM Ansible RM is not running in the same environment as ALM)
-#arm_addr_ip: 192.168.99.100
+## IP address of OSS Ansible RM (defaults to ip_address)
+#arm_addr_ip: 10.220.217.113
 
 ## These are the OSS Ansible RM (node)ports
 ## Override these if different from the defaults below.

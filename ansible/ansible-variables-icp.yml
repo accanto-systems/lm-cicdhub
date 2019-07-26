@@ -22,6 +22,7 @@ icp_port: 8001
 #icp_auth_token:
 
 ## This is false for ICP install
+microk8s: False
 kubeadm: False
 
 ####################################################################################
