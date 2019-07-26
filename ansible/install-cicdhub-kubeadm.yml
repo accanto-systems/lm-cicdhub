@@ -7,11 +7,6 @@
   vars_files:
     - ansible-variables-kubeadm.yml
   tasks:
-    - name: Configure Kubeadm installation
-      set_fact: 
-        kubeadm: True
-        icp: False
-
     - import_role:
         name: initial-setup
 
@@ -24,7 +19,7 @@
 
     - import_role:
         name: kubeadm
-      when: install_kubeadm|default(True)|bool == True
+      when: kubeadm|default(True)|bool == True
 
     - import_role:
         name: helm

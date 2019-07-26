@@ -1,4 +1,4 @@
 - import_tasks: setup-kubeadm.yml
-  when: kubeadm == True
+  when: kubernetes_platform == "kubeadm"
 - import_tasks: setup-icp.yml
-  when: icp == True
+  when: kubernetes_platform == "icp"

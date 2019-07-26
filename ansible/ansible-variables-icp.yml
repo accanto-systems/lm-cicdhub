@@ -7,17 +7,29 @@
 # hostname: "cicdhub"
 
 ####################################################################################
+# Docker
+####################################################################################
+
+## Note: if this is 'True', Docker will be installed on the cicdhub-host (the machine
+## that is installing CICDHub on ICP). Docker is required to build the custom Jenkins
+## Docker image.
+## Disable to prevent installation of Docker
+docker: True
+
+####################################################################################
 # Kubernetes
 ####################################################################################
 
+kubernetes_platform: icp
+
 ## Hostname of the ICP master node (must be set)
-#icp_host: 192.168.99.100
+icp_host: 10.220.217.11
 
 ## ICP Kubernetes API port
 icp_port: 8001
 
 ## ICP access token (must be set)
-#icp_auth_token:
+icp_auth_token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdF9oYXNoIjoiN2ZhODR0MHJnbXlxZGIzOTE0ZDgiLCJyZWFsbU5hbWUiOiJjdXN0b21SZWFsbSIsInVuaXF1ZVNlY3VyaXR5TmFtZSI6ImFkbWluIiwiaXNzIjoiaHR0cHM6Ly9teWNsdXN0ZXIuaWNwOjk0NDMvb2lkYy9lbmRwb2ludC9PUCIsImF1ZCI6IjNlZjg4NzUxNDc3NDQ3ODEwNzgxZTA5YTM4MGRjMmQ4IiwiZXhwIjoxNTY0MTY5OTA4LCJpYXQiOjE1NjQxNDExMDgsInN1YiI6ImFkbWluIiwidGVhbVJvbGVNYXBwaW5ncyI6W119.yAy5sLlpuVKgZPXnWxR0BPXCwLoNAKmMJ2G59ztxwEH7XsuJKpkkhQ_VVHVKH1W1epNV81meP2mI3rP6QUavzMuNqF6vuJV2j7pjUYAd87ZkKumJi-T4GVvWLl9O8Lcsn74VB0o-iVjV9Wqu6qsnGNsFAGv8ZoDpU3c0IzRNNvvEyLN-iZxbu4vVHxeV5b5FUKFpPY7Q4r7hkNfgy7CHIuDsVrSLsBU3p899vPmGIyddPhgs3V0tzOu8pFdemUJqW035yl4b_4tXCRhtZYE0VBhPgyjk-bVeRBHnl49YHcdTOzBuLQxDWQvBMwvAyEmyRsfI7OlhCER15rI-bwEY4Q"
 
 ####################################################################################
 # CICDHub

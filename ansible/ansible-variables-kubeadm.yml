@@ -17,8 +17,10 @@ docker: True
 # Kubernetes
 ####################################################################################
 
+kubernetes_platform: kubeadm
+
 ## Disable to prevent installation of Kubeadm
-install_kubeadm: True
+kubeadm: True
 
 # In a multi network interface server you can specify which ip address to bind kubeadm to, otherwise comment this variable out
 # and the default IP address discovered by Ansible will be used

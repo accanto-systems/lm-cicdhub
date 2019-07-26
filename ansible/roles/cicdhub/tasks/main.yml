@@ -29,12 +29,12 @@
 - name: Set CICDHub IP Address (kubeadm)
   set_fact:
     cicdhub_addr_ip: "{{ kubeadm_advertise_address if kubeadm_advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
-  when: kubeadm == True
+  when: kubernetes_platform == "kubeadm"
 
 - name: Set CICDHub IP Address (ICP)
   set_fact:
     cicdhub_addr_ip: "{{ icp_host }}"
-  when: icp == True
+  when: kubernetes_platform == "icp"
 
 - name: Set LM IP Address
   set_fact:
