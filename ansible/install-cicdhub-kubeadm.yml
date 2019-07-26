@@ -19,6 +19,7 @@
 
     - import_role:
         name: kubeadm
+      when: kubeadm|default(True)|bool == True
 
     - import_role:
         name: helm

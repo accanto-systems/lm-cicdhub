@@ -11,17 +11,14 @@ hostname: "cicdhub"
 ####################################################################################
 
 ## Disable to prevent installation of Docker
-docker: True
+#docker: True
 
 ####################################################################################
 # Kubernetes
 ####################################################################################
 
-## Disable to prevent installation of Kubeadm
+## Disable to prevent installation of microk8s
 microk8s: True
-
-kubeadm: False
-icp: False
 
 # In a multi network interface server you can specify which ip address to bind kubeadm to, otherwise comment this variable out
 # and the default IP address discovered by Ansible will be used
@@ -74,7 +71,7 @@ cicdhub_ingress_controller_enabled: True
 cicdhub_ingress_controller_port: 32080
 cicdhub_ingress_controller_https_port: 32443
 
-## Persistent volume storage classes (these are assumed to already exist in ICP if "cicdhub_init_volumes" is False)
+## Persistent volume storage classes
 cicdhub_nexus_storage_class: microk8s-hostpath
 cicdhub_gogs_storage_class: microk8s-hostpath
 cicdhub_dockerregistry_storage_class: microk8s-hostpath

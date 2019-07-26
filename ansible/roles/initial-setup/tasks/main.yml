@@ -1,6 +1,6 @@
 - import_tasks: setup-kubeadm.yml
-  when: kubeadm == True
+  when: kubernetes_platform == "kubeadm"
 - import_tasks: setup-icp.yml
-  when: icp == True
+  when: kubernetes_platform == "icp"
 - import_tasks: setup-microk8s.yml
-  when: microk8s == True
+  when: kubernetes_platform == "microk8s"

@@ -10,13 +10,6 @@
     - import_role:
         name: initial-setup
 
-    # - import_role:
-    #     name: docker
-    #   vars:
-    #     docker_insecure_registries: 
-    #     - "{{ advertise_address if advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:32736"
-    #   when: docker|default(False)|bool == True
-
     - import_role:
         name: microk8s
 

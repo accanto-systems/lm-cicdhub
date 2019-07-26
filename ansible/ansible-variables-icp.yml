@@ -7,23 +7,29 @@
 # hostname: "cicdhub"
 
 ####################################################################################
+# Docker
+####################################################################################
+
+## Note: if this is 'True', Docker will be installed on the cicdhub-host (the machine
+## that is installing CICDHub on ICP). Docker is required to build the custom Jenkins
+## Docker image.
+## Disable to prevent installation of Docker
+docker: True
+
+####################################################################################
 # Kubernetes
 ####################################################################################
 
-icp: True
+kubernetes_platform: icp
 
 ## Hostname of the ICP master node (must be set)
-#icp_host: 192.168.99.100
+icp_host: 10.220.217.11
 
 ## ICP Kubernetes API port
 icp_port: 8001
 
 ## ICP access token (must be set)
 #icp_auth_token:
-
-## This is false for ICP install
-microk8s: False
-kubeadm: False
 
 ####################################################################################
 # CICDHub
@@ -123,7 +129,7 @@ bootstrap_lm_helm_charts_path: ../bootstrap-content/lm-artifacts/lm-helm-charts-
 ####################################################################################
 
 ## "lm_address" is the IP address of an ALM reverse proxy to allow CICDHub (Jenkins) to connect to a running ALM
-## Set to the IP address of ALM reverse proxy, defaults to 'kubeadm_advertise_address' or the IP address chosen by Ansible if 'kubeadm_advertise_address' is not explicitly set.
+## Set to the IP address of ALM reverse proxy, defaults to 'advertise_address' or the IP address chosen by Ansible if 'advertise_address' is not explicitly set.
 #lm_address: 10.220.217.113
 
 ## Set to true if the ALM that CICDHub connects to is secure

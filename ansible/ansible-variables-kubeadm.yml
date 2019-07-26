@@ -17,12 +17,10 @@ docker: True
 # Kubernetes
 ####################################################################################
 
+kubernetes_platform: kubeadm
+
 ## Disable to prevent installation of Kubeadm
 kubeadm: True
-
-## Leave this as False
-microk8s: False
-icp: False
 
 # In a multi network interface server you can specify which ip address to bind kubeadm to, otherwise comment this variable out
 # and the default IP address discovered by Ansible will be used
@@ -140,7 +138,7 @@ bootstrap_lm_helm_charts_path: ../bootstrap-content/lm-artifacts/lm-helm-charts-
 ####################################################################################
 
 ## "lm_address" is the IP address of an ALM reverse proxy to allow CICDHub (Jenkins) to connect to a running ALM
-## Set to the IP address of ALM reverse proxy, defaults to 'kubeadm_advertise_address' or the IP address chosen by Ansible if 'kubeadm_advertise_address' is not explicitly set.
+## Set to the IP address of ALM reverse proxy, defaults to 'advertise_address' or the IP address chosen by Ansible if 'advertise_address' is not explicitly set.
 #lm_address: 192.168.99.100
 
 ## Set to true if the ALM that CICDHub connects to is secure

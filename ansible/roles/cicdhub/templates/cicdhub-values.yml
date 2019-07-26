@@ -1,15 +1,18 @@
-{% if (kubeadm == True) or (microk8s == True) %}
+{% if kubernetes_platform == "kubeadm" %}
 gogs:
   service:
     gogs:
       serverRootUrl: http://{{ advertise_address if advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:8001/
-{% endif %}
-
-{% if icp == True %}
+{% elif kubernetes_platform == "icp" %}
 gogs:
   service:
     gogs:
       serverRootUrl: http://{{ icp_host }}:8001/
+{% elif kubernetes_platform == "microk8s" %}
+gogs:
+  service:
+    gogs:
+      serverRootUrl: http://{{ advertise_address if advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:8001/
 {% endif %}
 
 {% if cicdhub_ingress_controller_enabled|default(True)|bool == False %}
