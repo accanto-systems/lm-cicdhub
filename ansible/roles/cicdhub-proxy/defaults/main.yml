@@ -1,5 +1,8 @@
 cicdhub_proxy_ssl: False
 
+cicdhub_main_proxy_port: 8180
+cicdhub_main_proxy_ssl_port: 8443
+
 cicdhub_docker_registry_proxy_target_host: docker-registry.cicdhub
 cicdhub_docker_registry_proxy_port: 8000
 cicdhub_docker_registry_proxy_ssl_port: 8100
