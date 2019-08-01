@@ -10,7 +10,7 @@ hostname: "cicdhub"
 # Docker
 ####################################################################################
 
-## Microk8s controls the installation of Docker
+## Note: microk8s controls the installation of Docker
 
 ####################################################################################
 # Kubernetes
@@ -21,7 +21,7 @@ kubernetes_platform: microk8s
 ## Disable to prevent installation of microk8s
 microk8s: True
 
-# In a multi network interface server you can specify which ip address to bind kubeadm to, otherwise comment this variable out
+# In a multi network interface server you can specify which ip address to bind CICDHub components to, otherwise comment this variable out
 # and the default IP address discovered by Ansible will be used
 # Set this to the IP you expect to use to access open ports on the target machine.
 advertise_address: 10.220.217.118

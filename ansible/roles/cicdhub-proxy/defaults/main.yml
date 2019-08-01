@@ -1,5 +1,6 @@
 cicdhub_proxy_ssl: False
 
+## Allow the Apache2 default ports (80 and 443) to be overridden (so that they can be used by another service)
 cicdhub_main_proxy_port: 8180
 cicdhub_main_proxy_ssl_port: 8443
 

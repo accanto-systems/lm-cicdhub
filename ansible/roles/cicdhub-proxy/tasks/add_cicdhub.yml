@@ -13,7 +13,7 @@
     state: absent
     path: /etc/apache2/sites-available/cicdhub-proxy.conf
 
-## LM SSL
+## CICDHub SSL
 - when: cicdhub_proxy_ssl|default(False)|bool == True
   block:
     - name: Ensure apache SSL directory exists
@@ -55,13 +55,10 @@
     src: cicdhub-proxy.conf
     dest: /etc/apache2/sites-available
 
-- name: Copy CICDHub pots.conf config
+- name: Copy CICDHub ports.conf config
   template:
     src: ports.conf
     dest: /etc/apache2/ports.conf
-
-#- name: Add default site
-#  command: a2ensite 000-default.conf
 
 - name: Add proxy site
   command: a2ensite cicdhub-proxy.conf
