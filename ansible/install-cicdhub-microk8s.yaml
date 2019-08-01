@@ -12,6 +12,7 @@
 
     - import_role:
         name: microk8s
+      when: microk8s|default(True)|bool == True
 
     - import_role:
         name: helm
