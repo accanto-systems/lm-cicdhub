@@ -26,24 +26,18 @@
 - import_tasks: prepare_volumes_directories.yml
 - import_tasks: install_cicdhub.yml
 
-- name: Set CICDHub IP Address (kubeadm)
+- name: Set CICDHub IP Address (kubeadm and microk8s)
   set_fact:
     cicdhub_addr_ip: "{{ advertise_address if advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
-  when: kubernetes_platform == "kubeadm"
+  when: (kubernetes_platform == "kubeadm" or kubernetes_platform == "microk8s")
 
 - name: Set CICDHub IP Address (ICP)
   set_fact:
     cicdhub_addr_ip: "{{ icp_host }}"
   when: kubernetes_platform == "icp"
 
-- name: Set CICDHub IP Address (microk8s)
-  set_fact:
-    cicdhub_addr_ip: "{{ advertise_address if advertise_address is defined else hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
-  when: kubernetes_platform == "microk8s"
-
 - name: Set LM IP Address
   set_fact:
-    # TODO for ICP this should be hostvars[inventory_hostname]['ansible_default_ipv4']['address']
     lm_addr_ip: "{{ lm_address if lm_address is defined else cicdhub_addr_ip }}"
 
 - name: Set ARM IP Address
