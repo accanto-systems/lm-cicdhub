@@ -56,6 +56,10 @@ volumesInit:
 nexus:
   persistence:
     storageClass: "{{ cicdhub_nexus_storage_class }}"
+{% elif kubernetes_platform == "kubeadm" or kubernetes_platform == "microk8s" %}
+nexus:
+  persistence:
+    storageClass: nexus-storage
 {% endif %}
 
 {% if cicdhub_gogs_storage_class is defined %}
@@ -65,24 +69,43 @@ gogs:
   postgresql:
     persistence:
       storageClass: "{{ cicdhub_gogs_storage_class }}"
+{% elif kubernetes_platform == "kubeadm" or kubernetes_platform == "microk8s" %}
+gogs:
+  persistence:
+    storageClass: gogs-storage
+  postgresql:
+    persistence:
+      storageClass: postgresql-storage
 {% endif %}
 
 {% if cicdhub_dockerregistry_storage_class is defined %}
 dockerregistry:
   persistence:
     storageClass: "{{ cicdhub_dockerregistry_storage_class }}"
+{% elif kubernetes_platform == "kubeadm" or kubernetes_platform == "microk8s" %}
+dockerregistry:
+  persistence:
+    storageClass: docker-registry-storage
 {% endif %}
 
 {% if cicdhub_jenkins_storage_class is defined %}
 jenkins:
   persistence:
     storageClass: "{{ cicdhub_jenkins_storage_class }}"
+{% elif kubernetes_platform == "kubeadm" or kubernetes_platform == "microk8s" %}
+jenkins:
+  persistence:
+    storageClass: jenkins-storage
 {% endif %}
 
 {% if cicdhub_openldap_storage_class is defined %}
 openldap:
   persistence:
     storageClass: "{{ cicdhub_openldap_storage_class }}"
+{% elif kubernetes_platform == "kubeadm" or kubernetes_platform == "microk8s" %}
+openldap:
+  persistence:
+    storageClass: openldap-storage
 {% endif %}
 
 global: 

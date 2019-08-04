@@ -23,7 +23,7 @@ cicdhub_nexus_proxy_ssl_port: 8102
 cicdhub_nexus_non_ssl_port: 32739
 cicdhub_nexus_ssl_port: 32443
 
-cicdhub_jenkins_master_proxy_target_host: jenkins-master.cicdhub
+cicdhub_jenkins_master_proxy_target_host: jenkins.cicdhub
 cicdhub_jenkins_master_proxy_port: 8003
 cicdhub_jenkins_master_proxy_ssl_port: 8103
 cicdhub_jenkins_master_non_ssl_port: 32080
