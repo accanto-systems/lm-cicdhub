@@ -20,4 +20,3 @@
 
 - name: Install CICDHub
   command: helm install {{ helm_inst_cicdhub_chart }} --name cicdhub {% if docker_registry_values_path is defined %}-f {{ docker_registry_values_path }}{% endif %} -f {{ cicdhub_installer_dir }}/cicdhub_values.yml {% if extra_values is defined %}{{extra_values}}{% endif %}
-

@@ -6,11 +6,6 @@
   set_fact:
     os_release: "{{ lsb_release.stdout.split(':')[1] | trim }}"
 
-- name: Check for correct OS version
-  fail:
-    msg: "CICDHub requires Ubuntu Xenial and the OS is {{ os_release }}"
-  when: "os_release != 'xenial'"
-
 - name: Update apt cache
   raw: apt-get -y update
 
@@ -51,3 +46,30 @@
     dest: /etc/hosts 
     line: "{{ advertise_address|default(hostvars[inventory_hostname]['ansible_default_ipv4']['address']) }} {{hostname}}" 
     state: present
+
+- name: Make sure Apache2 uninstalled (port 80 use conflicts with microk8s ingress controller)
+  apt: 
+    name: apache2
+    state: absent
+
+- name: Get users homedir
+  local_action: command echo ~
+  register: homedir
+
+- name: Clean /root/.kube directory
+  file:
+    state: absent
+    path: "/root/.kube"
+  become: yes
+
+- name: Clean /root/.helm directory
+  file:
+    state: absent
+    path: "/root/.helm"
+  become: yes
+
+- name: Clean /etc/kubernetes directory
+  file:
+    state: absent
+    path: "/etc/kubernetes"
+  become: yes

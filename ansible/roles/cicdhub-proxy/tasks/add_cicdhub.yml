@@ -3,12 +3,17 @@
   command: a2dissite cicdhub-proxy.conf
   ignore_errors: True
 
+- name: Remove existing default proxy config (if exists)
+  file:
+    state: absent
+    path: /etc/apache2/sites-available/000-default.conf
+
 - name: Remove existing proxy config (if exists)
   file:
     state: absent
     path: /etc/apache2/sites-available/cicdhub-proxy.conf
 
-## LM SSL
+## CICDHub SSL
 - when: cicdhub_proxy_ssl|default(False)|bool == True
   block:
     - name: Ensure apache SSL directory exists
@@ -40,12 +45,21 @@
         csr_path: /etc/apache2/ssl/cicdhub-ca.csr
         provider: selfsigned
 
+- name: Copy default proxy config
+  template:
+    src: 000-default.conf
+    dest: /etc/apache2/sites-available
 
-- name: Copy proxy config
+- name: Copy CICDHub proxy config
   template:
     src: cicdhub-proxy.conf
     dest: /etc/apache2/sites-available
-    
+
+- name: Copy CICDHub ports.conf config
+  template:
+    src: ports.conf
+    dest: /etc/apache2/ports.conf
+
 - name: Add proxy site
   command: a2ensite cicdhub-proxy.conf
 

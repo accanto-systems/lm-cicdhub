@@ -25,12 +25,12 @@ kubeadm: True
 # In a multi network interface server you can specify which ip address to bind kubeadm to, otherwise comment this variable out
 # and the default IP address discovered by Ansible will be used
 # Set this to the IP you expect to use to access open ports on the target machine.
-#kubeadm_advertise_address: 192.168.56.100
+advertise_address: 10.220.217.118
 
 # With a vagrant environment the first network interface is used by Vagrant. The network interface to bind kubeadm to must be specified here, e.g. eth1.
 # Change this variable to the main network interface or comment out and Ansible will use the default interface name.
-# If you have set `kubeadm_advertise_address` then the recommended way determine the correct flannel_interface is to
-# run `ifconfig` on the target machine, find the entry with the address you used on `kubeadm_advertise_address`, enter the name of that entry here.
+# If you have set `advertise_address` then the recommended way determine the correct flannel_interface is to
+# run `ifconfig` on the target machine, find the entry with the address you used on `advertise_address`, enter the name of that entry here.
 #flannel_interface: "eth1"
 
 # Set to 'yes' or 'True' to install the K8s Dashboard with Kubeadm
@@ -138,7 +138,7 @@ bootstrap_lm_helm_charts_path: ../bootstrap-content/lm-artifacts/lm-helm-charts-
 ####################################################################################
 
 ## "lm_address" is the IP address of an ALM reverse proxy to allow CICDHub (Jenkins) to connect to a running ALM
-## Set to the IP address of ALM reverse proxy, defaults to 'kubeadm_advertise_address' or the IP address chosen by Ansible if 'kubeadm_advertise_address' is not explicitly set.
+## Set to the IP address of ALM reverse proxy, defaults to 'advertise_address' or the IP address chosen by Ansible if 'advertise_address' is not explicitly set.
 #lm_address: 192.168.99.100
 
 ## Set to true if the ALM that CICDHub connects to is secure
