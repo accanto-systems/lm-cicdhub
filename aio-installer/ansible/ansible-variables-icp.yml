@@ -1,0 +1,113 @@
+---
+####################################################################################
+# General System Variables
+####################################################################################
+
+# Set the hostname of the target machine
+# hostname: "cicdhub"
+
+####################################################################################
+# Docker
+####################################################################################
+
+## Note: if this is 'True', Docker will be installed on the cicdhub-host (the machine
+## that is installing CICDHub on ICP). Docker is required to build the custom Jenkins
+## Docker image.
+## Disable to prevent installation of Docker
+docker: True
+
+####################################################################################
+# Kubernetes
+####################################################################################
+
+kubernetes_platform: icp
+
+## Hostname of the ICP master node (must be set)
+icp_host: 10.220.217.11
+
+## ICP Kubernetes API port
+icp_port: 8001
+
+## ICP access token (must be set)
+#icp_auth_token:
+
+####################################################################################
+# CICDHub
+####################################################################################
+
+## Disable to prevent installation of CICDHub components
+cicdhub: True
+
+##################################
+# CICDHub - Helm Chart
+##################################
+
+cicdhub_chart_strategy: from_chart
+cicdhub_chart_package: https://github.com/accanto-systems/lm-cicdhub/releases/download/v2.0.4/cicdhub-2.0.4.tgz.tgz
+
+## Path to a helm values file to be included on the install of Cicdhub Helm chart
+cicdhub_values: cicdhub-helm-values.yml
+
+## Recommendation is to use a storage class e.g. Glusterfs or Longhorn for ICP
+cicdhub_init_volumes: False
+cicdhub_init_volumes_directories: False
+
+cicdhub_ingress_controller_enabled: True
+# set this to 32080 to be consistent with kubeadm and to avoid port 80 (which is used by ICP official Ingress Controller)
+cicdhub_ingress_controller_port: 32080
+cicdhub_ingress_controller_https_port: 32443
+
+## Persistent volume storage classes (these are assumed to already exist in ICP if "cicdhub_init_volumes" is False)
+cicdhub_nexus_storage_class: longhorn
+cicdhub_gogs_storage_class: longhorn
+cicdhub_dockerregistry_storage_class: longhorn
+cicdhub_jenkins_storage_class: longhorn
+cicdhub_openldap_storage_class: longhorn
+
+# Set CICDHub Openldap password
+cicdhub_ldap_manager_password: admin
+
+##################################
+# CICDHub - Bootstrap Content
+##################################
+
+## Configures a Jenkins jnlp slave with lmctl installed
+bootstrap_jenkins_lmctl_slave: True
+bootstrap_jenkins_lmctl_version: 2.0.4
+# Path to an Lmctl config file for the target LM environment to be used by the slave
+bootstrap_jenkins_lmctl_config_file: ./jenkins-slave-lmctl-config.yaml
+
+####################################################################################
+# External Lifecycle Manager
+####################################################################################
+
+## "lm_address" is the IP address of an ALM reverse proxy to allow CICDHub (Jenkins) to connect to a running ALM
+## Set to the IP address of ALM reverse proxy, defaults to 'advertise_address' or the IP address chosen by Ansible if 'advertise_address' is not explicitly set.
+#lm_address: 10.220.217.113
+
+## Set to true if the ALM that CICDHub connects to is secure
+lm_secure: True
+
+## ALM Username and password you would use to log in the UI if lm_secure == True
+lm_username: jack
+lm_password: jack
+
+####################################################################################
+# OSS Ansible RM
+####################################################################################
+
+## True if OSS Ansible RM is running with https enabled, false otherwise
+arm_secure: True
+
+## IP address of OSS Ansible RM, defaults to ip_address (set this if OSSLM Ansible RM is not running in the same environment as ALM)
+#arm_addr_ip: 192.168.99.100
+
+## These are the OSS Ansible RM (node)ports
+## Override these if different from the defaults below.
+arm_api_non_ssl_port: 31080
+arm_api_ssl_port: 31081
+
+## OSS Ansible RM URIs
+## Override these to allow ALM to access OSSLM Ansible RM if it is not running in the same environment as ALM.
+arm_https_uri: https://osslm-ansible-rm:8443
+arm_http_uri: http://osslm-ansible-rm:8080

@@ -1,9 +1,0 @@
-{
-    "name": "hw1",
-    "projectId": "assembly::hello-world::1.0",
-    "description": "The hello-world service template",
-    "descriptorName": "assembly::hello-world::1.0",
-    "properties": {},
-    "createdAt": "2019-02-28T09:30:17.519Z",
-    "lastModifiedAt": "2019-02-28T09:30:17.519Z"
-}

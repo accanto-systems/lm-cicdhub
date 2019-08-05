@@ -1,3 +1,0 @@
-name: docker-network
-version: 1.0
-resource-manager: docker

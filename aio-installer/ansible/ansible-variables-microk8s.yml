@@ -1,0 +1,123 @@
+---
+####################################################################################
+# General System Variables
+####################################################################################
+
+# Set the hostname of the target machine
+hostname: "cicdhub"
+
+####################################################################################
+# Docker
+####################################################################################
+
+## Note: microk8s controls the installation of Docker
+
+####################################################################################
+# Kubernetes
+####################################################################################
+
+kubernetes_platform: microk8s
+
+## Disable to prevent installation of microk8s
+microk8s: True
+
+# In a multi network interface server you can specify which ip address to bind CICDHub components to, otherwise comment this variable out
+# and the default IP address discovered by Ansible will be used
+# Set this to the IP you expect to use to access open ports on the target machine.
+advertise_address: 10.220.217.118
+
+# Set to 'yes' or 'True' to install the K8s Dashboard with Kubeadm
+kube_dashboard: True
+
+## Disable to prevent installation of Helm
+helm: True
+
+## List of Helm repositories to add
+#helm_repos:
+#  - name: repo-name
+#    url: repo-addr
+
+k8s_namespace: default
+
+####################################################################################
+# CICDHub
+####################################################################################
+
+## Disable to prevent installation of CICDHub components
+cicdhub: True
+
+##################################
+# CICDHub - Helm Chart
+##################################
+
+cicdhub_chart_strategy: from_chart
+cicdhub_chart_package: https://github.com/accanto-systems/lm-cicdhub/releases/download/v2.0.4/cicdhub-2.0.4.tgz.tgz
+
+## Path to a helm values file to be included on the install of Cicdhub Helm chart
+cicdhub_values: cicdhub-helm-values.yml
+
+## When using local volumes we need to create the directories and persistent volumes upfront
+## When re-installing the CICDHub, disable only 'cicdhub_init_volumes_directories' to keep the existing directories and there contents.
+cicdhub_init_volumes: False
+cicdhub_init_volumes_directories: False
+
+cicdhub_ingress_controller_enabled: True
+# set this to 32080 to be consistent with kubeadm and to avoid port 80 (which is used by ICP official Ingress Controller)
+cicdhub_ingress_controller_port: 32080
+cicdhub_ingress_controller_https_port: 32443
+
+## Persistent volume storage classes
+cicdhub_nexus_storage_class: microk8s-hostpath
+cicdhub_gogs_storage_class: microk8s-hostpath
+cicdhub_dockerregistry_storage_class: microk8s-hostpath
+cicdhub_jenkins_storage_class: microk8s-hostpath
+cicdhub_openldap_storage_class: microk8s-hostpath
+
+# Set CICDHub Openldap password
+cicdhub_ldap_manager_password: admin
+
+##################################
+# CICDHub - Bootstrap Content
+##################################
+
+## Configures a Jenkins jnlp slave with lmctl installed
+bootstrap_jenkins_lmctl_slave: True
+bootstrap_jenkins_lmctl_version: 2.0.4
+# Path to an Lmctl config file for the target LM environment to be used by the slave
+bootstrap_jenkins_lmctl_config_file: ./jenkins-slave-lmctl-config.yaml
+
+####################################################################################
+# External Lifecycle Manager
+####################################################################################
+
+## "lm_address" is the IP address of an ALM reverse proxy to allow CICDHub (Jenkins) to connect to a running ALM
+## Set to the IP address of ALM reverse proxy
+lm_address: 10.220.217.118
+
+## Set to true if the ALM that CICDHub connects to is secure
+lm_secure: True
+
+## ALM Username and password you would use to log in the UI if lm_secure == True
+lm_username: jack
+lm_password: jack
+
+####################################################################################
+# OSS Ansible RM
+####################################################################################
+
+## True if OSS Ansible RM is running with https enabled, false otherwise
+arm_secure: True
+
+## IP address of OSS Ansible RM (defaults to ip_address)
+#arm_addr_ip: 10.220.217.113
+
+## These are the OSS Ansible RM (node)ports
+## Override these if different from the defaults below.
+arm_api_non_ssl_port: 31080
+arm_api_ssl_port: 31081
+
+## OSS Ansible RM URIs
+## Override these to allow ALM to access OSSLM Ansible RM if it is not running in the same environment as ALM.
+arm_https_uri: https://osslm-ansible-rm:8443
+arm_http_uri: http://osslm-ansible-rm:8080
+

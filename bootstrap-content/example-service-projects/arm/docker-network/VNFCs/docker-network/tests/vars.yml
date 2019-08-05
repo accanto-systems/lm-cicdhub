@@ -1,8 +1,0 @@
-location_server: "10.0.2.15"
-networkname: test_network
-subnet: "10.5.5.0/24"
-ip_range:
-prefix: "10.5.5.0"
-mask: "255.255.255.0"
-gateway: "10.5.5.1"
-bridgename: "test_bridge" 
