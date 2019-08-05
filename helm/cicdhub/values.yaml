@@ -1,21 +1,20 @@
-## Global settings used across all LM subcharts
+## Global settings 
 global:
-  security:
-    enabled: false
-
-  ## Openldap values shared with the other helm charts  
   ldap:
     ## LDAP's manager password
     managerPassword: admin
     ## LDAP's domain
     domain: lm.com
 
-## Helper to create Persistence Volumes for the foundation services with persistence.enabled
-## Should only be used in single node Kubernetes deployments, as Persistence Volumes will be created using the hostPath type (https://kubernetes.io/docs/concepts/storage/volumes/#hostpath)
+## Helper to create Persistence Volumes based for the foundation services with persistence.enabled
+## The volumes will created using the hostPath type (https://kubernetes.io/docs/concepts/storage/volumes/#hostpath)
+## meaning they will mount local volumes on the host
+## Therefore, they should only be used in single node Kubernetes deployments for testing purposes 
 ## Each volume will be tailored towards the size requirements, specified by the values, of each foundation service requiring persistence
 ## E.g. a volume will be created with size equal to the cassandra.persistence.size value
+## When enabling this value you must configure the storageClass for each service to values shown in a comment above field in this file
 volumesInit:
-  enabled: true
+  enabled: false
   ## The directory on the host where volumes will be created. It is important that the user running kubernetes has read/write access to this directory
   hostPath: /var/cicdhub
 
@@ -26,7 +25,9 @@ nexus:
     enabled: true
   persistence:
     enabled: true
-    storageClass: nexus-storage
+    ## Customise the storage class. Leave undefined to use the default on the kubernetes cluster
+    ## Use storageClass: nexus-storage if using local volumes created by volumesInit
+    #storageClass: 
   ingress:
     enabled: false
     annotations:
@@ -45,10 +46,6 @@ gogs:
     httpNodePort: 32734
     gogs:
       serviceEnableCaptcha: false
-      databaseHost: lm-cicdhub-postgresql
-      databaseUser: marketplace
-      databasePassword: password
-      databaseName: gogs
       repositoryUploadMaxFileSize: 10000
     ingress:
       enabled: true
@@ -59,16 +56,20 @@ gogs:
         nginx.ingress.kubernetes.io/proxy-body-size: 0
   persistence:
     enabled: true
-    storageClass: "gogs-storage"
+    ## Customise the storage class. Leave undefined to use the default on the kubernetes cluster
+    ## Use storageClass: gogs-storage if using local volumes created by volumesInit
+    #storageClass: 
     size: 1Gi
   postgresql:
     enabled: true
     install: true
-    postgresUser: marketplace
-    postgresPassword: password
+    postgresUser: cicdhub
+    postgresPassword: cicdhub
     persistence:
       enabled: true
-      storageClass: postgresql-storage
+      ## Customise the storage class. Leave undefined to use the default on the kubernetes cluster
+      ## Use storageClass: postgresql-storage if using local volumes created by volumesInit
+      #storageClass: 
       accessModes:
       - ReadWriteOnce
       size: 5Gi
@@ -80,7 +81,9 @@ dockerregistry:
     enabled: true
     deleteEnabled: true
     size: 100Gi
-    storageClass: docker-registry-storage
+    ## Customise the storage class. Leave undefined to use the default on the kubernetes cluster
+    ## Use storageClass: docker-registry-storage if using local volumes created by volumesInit
+    #storageClass:
   service:
     type: NodePort
     nodePort: 32736
@@ -99,14 +102,16 @@ jenkins:
     nodePort: 32732
     ingress:
       enabled: true
-      hostName: jenkins-master.cicdhub
+      hostName: jenkins.cicdhub
     adminUser: admin
     adminPassword: admin
     numExecutors: 2
     cli: true
   persistence:
     enabled: true
-    storageClass: "jenkins-storage"
+    ## Customise the storage class. Leave undefined to use the default on the kubernetes cluster
+    ## Use storageClass: jenkins-storage if using local volumes created by volumesInit
+    #storageClass:
     size: 1Gi
 
 ## Openldap is an optional dependency for LM. An LDAP server is required when security is enabled, for user management. 
@@ -119,7 +124,9 @@ openldap:
   persistence:
     enabled: true
     size: "5Gi"
-    storageClass: openldap-storage
+    ## Customise the storage class. Leave undefined to use the default on the kubernetes cluster
+    ## Use storageClass: openldap-storage if using local volumes created by volumesInit
+    #storageClass:
   existingSecret: openldap-config
   env:
     LDAP_ORGANISATION: "lm"
@@ -143,5 +150,5 @@ nginx-ingress:
     service:
       type: NodePort
       nodePorts:
-        http: 32080 #80
-        https: 32443 #443
+        http: 32080 
+        https: 32443
