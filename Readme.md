@@ -1,6 +1,6 @@
-# CICDHub Environment
+# CI/CD Hub Environment
 
-This project provides a reference CICDHub for the Stratoss&trade; Lifecycle Manager.
+This project provides a reference CI/CD Hub for the Stratoss&trade; Lifecycle Manager.
 
 The following software components will be installed on a target Kubernetes environment:
 
@@ -8,7 +8,6 @@ The following software components will be installed on a target Kubernetes envir
 - **Nexus**: A artifact repository manager
 - **Jenkins**: Automation server to enable continuous integration and continuous delivery
 - **Openldap**: Open-source implementation of the Lightweight Directry Access Protocol, for user management of LM
-- **Docker Registry**: For hosting docker images
 
 # Contents
 
