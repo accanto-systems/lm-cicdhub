@@ -1,6 +1,0 @@
-- name: Update hosts
-  lineinfile: 
-    dest: /etc/hosts
-    line: "{{ cicdhub_addr_ip }} docker-registry.cicdhub nexus.cicdhub jenkins.cicdhub git.cicdhub openldap.cicdhub" 
-    state: present
-  become: yes
