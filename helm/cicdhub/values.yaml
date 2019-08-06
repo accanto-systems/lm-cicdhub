@@ -133,3 +133,17 @@ nginx-ingress:
       nodePorts:
         http: 32080 
         https: 32443
+
+dockerregistry:
+  enabled: true
+  replicaCount: 1
+  persistence:
+    enabled: true
+    deleteEnabled: true
+    size: 100Gi
+    ## Customise the storage class. Leave undefined to use the default on the kubernetes cluster
+    ## Use storageClass: docker-registry-storage if using local volumes created by volumesInit
+    #storageClass:
+  service:
+    type: NodePort
+    nodePort: 32736

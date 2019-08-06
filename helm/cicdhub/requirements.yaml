@@ -10,6 +10,12 @@ dependencies:
     repository: "@stable"
     condition: jenkins.enabled
 
+  - name: docker-registry
+    alias: dockerregistry
+    version: 1.7.0
+    repository: "@stable"
+    condition: dockerregistry.enabled
+
   - name: gogs
     version: 0.7.6
     repository: "@incubator"

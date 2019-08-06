@@ -8,6 +8,7 @@ The following software components will be installed on a target Kubernetes envir
 - **Nexus**: A artifact repository manager
 - **Jenkins**: Automation server to enable continuous integration and continuous delivery
 - **Openldap**: Open-source implementation of the Lightweight Directry Access Protocol, for user management of LM
+- **Docker Registry**: For hosting docker images
 
 # Contents
 
