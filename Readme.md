@@ -1,6 +1,6 @@
-# CICDHub Environment
+# CI/CD Hub Environment
 
-This project provides a reference CICDHub for the Stratoss&trade; Lifecycle Manager.
+This project provides a reference CI/CD Hub for the Stratoss&trade; Lifecycle Manager.
 
 The following software components will be installed on a target Kubernetes environment:
 
@@ -12,4 +12,4 @@ The following software components will be installed on a target Kubernetes envir
 
 # Contents
 
-- [Install](./docs/install_instructions.md)
+- [Install](http://servicelifecyclemanager.com/installation/cicdhub/cicd-hub-start/)

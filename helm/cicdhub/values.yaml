@@ -28,6 +28,7 @@ nexus:
     ## Customise the storage class. Leave undefined to use the default on the kubernetes cluster
     ## Use storageClass: nexus-storage if using local volumes created by volumesInit
     #storageClass: 
+    storageSize: 100Gi
   ingress:
     enabled: false
     annotations:
@@ -63,8 +64,8 @@ gogs:
   postgresql:
     enabled: true
     install: true
-    postgresUser: cicdhub
-    postgresPassword: cicdhub
+    postgresUser: admin
+    postgresPassword: admin
     persistence:
       enabled: true
       ## Customise the storage class. Leave undefined to use the default on the kubernetes cluster
@@ -73,26 +74,6 @@ gogs:
       accessModes:
       - ReadWriteOnce
       size: 5Gi
-
-dockerregistry:
-  enabled: true
-  replicaCount: 1
-  persistence:
-    enabled: true
-    deleteEnabled: true
-    size: 100Gi
-    ## Customise the storage class. Leave undefined to use the default on the kubernetes cluster
-    ## Use storageClass: docker-registry-storage if using local volumes created by volumesInit
-    #storageClass:
-  service:
-    type: NodePort
-    nodePort: 32736
-  ingress:
-    enabled: true
-    annotations:
-      nginx.ingress.kubernetes.io/proxy-body-size: 0
-    hosts:
-    - docker-registry.cicdhub
 
 jenkins:
   enabled: true
@@ -152,3 +133,17 @@ nginx-ingress:
       nodePorts:
         http: 32080 
         https: 32443
+
+dockerregistry:
+  enabled: true
+  replicaCount: 1
+  persistence:
+    enabled: true
+    deleteEnabled: true
+    size: 100Gi
+    ## Customise the storage class. Leave undefined to use the default on the kubernetes cluster
+    ## Use storageClass: docker-registry-storage if using local volumes created by volumesInit
+    #storageClass:
+  service:
+    type: NodePort
+    nodePort: 32736
