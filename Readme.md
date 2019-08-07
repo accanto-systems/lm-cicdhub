@@ -12,4 +12,4 @@ The following software components will be installed on a target Kubernetes envir
 
 # Contents
 
-- [Install](./docs/install_instructions.md)
+- [Install](http://servicelifecyclemanager.com/installation/cicdhub/cicd-hub-start/)
