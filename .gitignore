@@ -1,20 +1,4 @@
 ######################
-# Bootstrap Content
-######################
-bootstrap-content/lm-artifacts/**
-
-######################
-# Ansible
-######################
-ansible/roles/ansiblerm
-ansible/roles/docker
-ansible/roles/kubeadm
-ansible/roles/helm
-ansible/roles/lifecyclemanager
-ansible/roles/lifecyclemanager-proxy
-ansible/*.retry
-
-######################
 # Helm
 ######################
 helm/cicdhub/charts
