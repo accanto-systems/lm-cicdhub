@@ -27,7 +27,7 @@ nexus:
     enabled: true
     ## Customise the storage class. Leave undefined to use the default on the kubernetes cluster
     ## Use storageClass: nexus-storage if using local volumes created by volumesInit
-    #storageClass: 
+    storageClass: managed-nfs-storage
     storageSize: 100Gi
   ingress:
     enabled: false
@@ -49,7 +49,7 @@ gogs:
       serviceEnableCaptcha: false
       repositoryUploadMaxFileSize: 10000
     ingress:
-      enabled: true
+      enabled: false
       hosts:
       - git.cicdhub
       annotations:
@@ -59,7 +59,7 @@ gogs:
     enabled: true
     ## Customise the storage class. Leave undefined to use the default on the kubernetes cluster
     ## Use storageClass: gogs-storage if using local volumes created by volumesInit
-    #storageClass: 
+    storageClass: managed-nfs-storage
     size: 1Gi
   postgresql:
     enabled: true
@@ -70,7 +70,7 @@ gogs:
       enabled: true
       ## Customise the storage class. Leave undefined to use the default on the kubernetes cluster
       ## Use storageClass: postgresql-storage if using local volumes created by volumesInit
-      #storageClass: 
+      storageClass: managed-nfs-storage
       accessModes:
       - ReadWriteOnce
       size: 5Gi
@@ -78,11 +78,11 @@ gogs:
 jenkins:
   enabled: true
   master:
-    imageTag: 2.182
+    imageTag: 2.243
     serviceType: NodePort
     nodePort: 32732
     ingress:
-      enabled: true
+      enabled: false
       hostName: jenkins.cicdhub
     adminUser: admin
     adminPassword: admin
@@ -114,7 +114,8 @@ jenkins:
       - jsch:0.1.55.1
       - junit:1.28
       - kubernetes:1.16.0
-      - kubernetes-credentials:0.4.1
+      - kubernetes-credentials:0.7.0
+      - kubernetes-client:4.9.2-1
       - lockable-resources:2.6
       - mailer:1.29
       - matrix-project:1.14
@@ -153,22 +154,22 @@ jenkins:
     enabled: true
     ## Customise the storage class. Leave undefined to use the default on the kubernetes cluster
     ## Use storageClass: jenkins-storage if using local volumes created by volumesInit
-    #storageClass:
-    size: 1Gi
+    storageClass: managed-nfs-storage
+    size: 2Gi
 
 ## Openldap is an optional dependency for LM. An LDAP server is required when security is enabled, for user management. 
 ## Openldap is the out-of-the-box recommendation. 
 ## Full documentation for the values allowed in this section can be found at: https://github.com/helm/charts/tree/master/stable/openldap
 ## Note: remember to locate the version of the Openldap helm chart in use by viewing the requirements.yaml file of helm-foundation      
 openldap:
-  enabled: true
+  enabled: false
   replicaCount: 1
   persistence:
     enabled: true
-    size: "5Gi"
+    size: "10Gi"
     ## Customise the storage class. Leave undefined to use the default on the kubernetes cluster
     ## Use storageClass: openldap-storage if using local volumes created by volumesInit
-    #storageClass:
+    storageClass: managed-nfs-storage
   existingSecret: openldap-config
   env:
     LDAP_ORGANISATION: "lm"
@@ -187,7 +188,7 @@ openldapInit:
 
 ## Installs the nginx-ingress controller to enable access to services
 nginx-ingress:
-  enabled: true
+  enabled: false
   controller:
     service:
       type: NodePort
@@ -196,15 +197,15 @@ nginx-ingress:
         https: 32443
 
 dockerregistry:
-  enabled: true
+  enabled: false
   replicaCount: 1
   persistence:
     enabled: true
     deleteEnabled: true
-    size: 100Gi
+    size: 150Gi
     ## Customise the storage class. Leave undefined to use the default on the kubernetes cluster
     ## Use storageClass: docker-registry-storage if using local volumes created by volumesInit
-    #storageClass:
+    storageClass: managed-nfs-storage
   service:
     type: NodePort
     nodePort: 32736
