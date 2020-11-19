@@ -1,0 +1,21 @@
+dependencies:
+- name: sonatype-nexus
+  repository: https://kubernetes-charts.storage.googleapis.com
+  version: 1.16.0
+- name: jenkins
+  repository: https://kubernetes-charts.storage.googleapis.com
+  version: 1.3.2
+- name: docker-registry
+  repository: https://kubernetes-charts.storage.googleapis.com
+  version: 1.7.0
+- name: gogs
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  version: 0.7.6
+- name: nginx-ingress
+  repository: https://kubernetes-charts.storage.googleapis.com
+  version: 0.29.2
+- name: openldap
+  repository: https://kubernetes-charts.storage.googleapis.com
+  version: 0.2.3
+digest: sha256:111d166dd597c97b105d3a3ba5f75b44f8fa72e12edff3a692faaff9d71482fe
+generated: 2019-10-30T15:00:52.097453633Z
