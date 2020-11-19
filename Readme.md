@@ -12,4 +12,4 @@ The following software components will be installed on a target Kubernetes envir
 
 # Contents
 
-- [Install](http://servicelifecyclemanager.com/installation/cicdhub/cicd-hub-start/)
+- [Install](https://ibm.github.io/telco-network-cloud-drivers/installation/cicdhub/cicd-hub-start/)
